@@ -26,32 +26,6 @@ import org.gradle.api.Incubating;
  */
 @Incubating
 public interface ProblemSpec {
-
-    /**
-     * Defines simple identification for this problem.
-     * <p>
-     * It is a mandatory property to configure when emitting a problem with {@link ProblemReporter}..
-     * <p>
-     * Calling this method will set the reported problem group to {@link SharedProblemGroup#generic()}
-     *
-     * @param name the name of the problem. As a convention kebab-case-formatting should be used.
-     * @param displayName a human-readable representation of the problem, free of any contextual information.
-     * @return this
-     * @since 8.8
-     */
-    ProblemSpec id(String name, String displayName);
-
-    /**
-     * Optional property
-     *
-     * @param name the name of the problem. As a convention kebab-case-formatting should be used.
-     * @param displayName a human-readable representation of the problem, free of any contextual information.
-     * @param parent the container problem group.
-     * @return this
-     * @since 8.8
-     */
-    ProblemSpec id(String name, String displayName, ProblemGroup parent);
-
     /**
      * Declares a short, but context-dependent message for this problem.
      *

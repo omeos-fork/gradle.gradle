@@ -83,8 +83,6 @@ import org.gradle.internal.serialize.kryo.KryoBackedDecoder
 import org.gradle.internal.serialize.kryo.KryoBackedEncoder
 import org.gradle.internal.serialize.kryo.StringDeduplicatingKryoBackedDecoder
 import org.gradle.internal.serialize.kryo.StringDeduplicatingKryoBackedEncoder
-import org.gradle.internal.service.scopes.Scope
-import org.gradle.internal.service.scopes.ServiceScope
 import org.gradle.util.Path
 import java.io.Closeable
 import java.io.File
@@ -92,7 +90,6 @@ import java.io.InputStream
 import java.io.OutputStream
 
 
-@ServiceScope(Scope.Build::class)
 internal
 class DefaultConfigurationCacheIO internal constructor(
     private val startParameter: ConfigurationCacheStartParameter,
@@ -120,7 +117,7 @@ class DefaultConfigurationCacheIO internal constructor(
         stateFile: ConfigurationCacheStateFile
     ) {
         val rootDirs = collectRootDirs(buildStateRegistry)
-        writeConfigurationCacheState(stateFile) {
+        withWriteContextFor(stateFile, { "entry details" }) {
             writeCollection(rootDirs) { writeFile(it) }
             val addressSerializer = BlockAddressSerializer()
             writeCollection(intermediateModels.entries) { entry ->
@@ -141,7 +138,7 @@ class DefaultConfigurationCacheIO internal constructor(
         if (!stateFile.exists) {
             return null
         }
-        return readConfigurationCacheState(stateFile) {
+        return withReadContextFor(stateFile) {
             val rootDirs = readList { readFile() }
             val addressSerializer = BlockAddressSerializer()
             val intermediateModels = mutableMapOf<ModelKey, BlockAddress>()

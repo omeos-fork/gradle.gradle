@@ -17,6 +17,7 @@
 package org.gradle.internal.cc.impl
 
 import org.gradle.api.internal.GradleInternal
+import org.gradle.api.internal.project.ProjectIdentity
 import org.gradle.api.internal.properties.GradleProperties
 import org.gradle.api.internal.provider.ConfigurationTimeBarrier
 import org.gradle.api.internal.provider.DefaultConfigurationTimeBarrier
@@ -280,7 +281,7 @@ class DefaultConfigurationCache internal constructor(
         }
     }
 
-    override fun <T> loadOrCreateIntermediateModel(project: ProjectIdentityPath?, modelName: String, parameter: ToolingModelParameterCarrier?, creator: () -> T?): T? {
+    override fun <T> loadOrCreateIntermediateModel(project: ProjectIdentity?, modelName: String, parameter: ToolingModelParameterCarrier?, creator: () -> T?): T? {
         return intermediateModels.loadOrCreateIntermediateModel(project, modelName, parameter, creator)
     }
 
@@ -498,8 +499,19 @@ class DefaultConfigurationCache internal constructor(
         val existingEntries = readCandidateEntries()
         val newEntries = update(existingEntries)
         if (existingEntries != newEntries) {
-            // TODO:configuration-cache queue up evicted entry paths for deletion
             writeCandidateEntries(newEntries)
+            scheduleForCollection(existingEntries - newEntries.toHashSet())
+        }
+    }
+
+    private
+    fun scheduleForCollection(evictedEntries: List<CandidateEntry>) {
+        if (evictedEntries.isNotEmpty()) {
+            host.service<ConfigurationCacheEntryCollector>().let { collector ->
+                evictedEntries.forEach { entry ->
+                    collector.scheduleForCollection(entry.id)
+                }
+            }
         }
     }
 
