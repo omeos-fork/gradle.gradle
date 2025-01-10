@@ -18,6 +18,7 @@ package org.gradle.integtests.fixtures.problems
 
 import groovy.transform.CompileStatic
 import org.gradle.api.problems.AdditionalData
+import org.gradle.api.problems.DocLink
 import org.gradle.api.problems.FileLocation
 import org.gradle.api.problems.LineInFileLocation
 import org.gradle.api.problems.OffsetInFileLocation
@@ -26,7 +27,6 @@ import org.gradle.api.problems.ProblemGroup
 import org.gradle.api.problems.ProblemId
 import org.gradle.api.problems.ProblemLocation
 import org.gradle.api.problems.Severity
-import org.gradle.api.problems.internal.AdditionalDataBuilderFactory
 import org.gradle.api.problems.internal.InternalDocLink
 import org.gradle.api.problems.internal.InternalProblem
 import org.gradle.api.problems.internal.InternalProblemBuilder
@@ -36,7 +36,6 @@ import org.gradle.api.problems.internal.TaskPathLocation
 /*
  * A deserialized representation of a problem received from the build operation trace.
  */
-
 @CompileStatic
 class ReceivedProblem implements InternalProblem {
     private final long operationId
@@ -53,7 +52,7 @@ class ReceivedProblem implements InternalProblem {
         this.operationId = operationId
         this.definition = new ReceivedProblemDefinition(problemDetails['definition'] as Map<String, Object>)
         this.contextualLabel = problemDetails['contextualLabel'] as String
-        this.details = problemDetails['details'] as String
+        this.details =  problemDetails['details'] as String
         this.solutions = problemDetails['solutions'] as List<String>
         this.originLocations = fromList(problemDetails['originLocations'] as List<Object>)
         this.contextualLocations = fromList(problemDetails['contextualLocations'] as List<Object>)
@@ -65,7 +64,7 @@ class ReceivedProblem implements InternalProblem {
         List<ProblemLocation> result = []
         locations.each { location ->
             if (location['pluginId'] != null) {
-                result += new ReceivedPluginIdLocation(location as Map<String, Object>)
+                result += new ReceivedPluginIdLocation(location as Map<String, String>)
             } else if (location['line'] != null) {
                 result += new ReceivedLineInFileLocation(location as Map<String, Object>)
             } else if (location['offset'] != null) {
@@ -100,7 +99,7 @@ class ReceivedProblem implements InternalProblem {
     }
 
     @Override
-    ReceivedProblemDefinition getDefinition() {
+    ProblemDefinition getDefinition() {
         definition
     }
 
@@ -115,12 +114,12 @@ class ReceivedProblem implements InternalProblem {
 
     @Override
     String getContextualLabel() {
-        contextualLabel
+       contextualLabel
     }
 
     @Override
     String getDetails() {
-        details
+       details
     }
 
     @Override
@@ -142,13 +141,13 @@ class ReceivedProblem implements InternalProblem {
         def location = originLocations.find {
             locationType.isInstance(it)
         }
-        assert location != null: "Expected a location of type $locationType, but found none."
+        assert location != null : "Expected a location of type $locationType, but found none."
         return locationType.cast(location)
     }
 
     @Override
-    ReceivedAdditionalData getAdditionalData() {
-        additionalData
+    AdditionalData getAdditionalData() {
+       additionalData
     }
 
     @Override
@@ -157,7 +156,7 @@ class ReceivedProblem implements InternalProblem {
     }
 
     @Override
-    InternalProblemBuilder toBuilder(AdditionalDataBuilderFactory additionalDataBuilderFactory) {
+    InternalProblemBuilder toBuilder() {
         throw new UnsupportedOperationException("Not implemented")
     }
 
@@ -169,7 +168,7 @@ class ReceivedProblem implements InternalProblem {
         ReceivedProblemDefinition(Map<String, Object> definition) {
             id = new ReceivedProblemId(definition['id'] as Map<String, Object>)
             severity = Severity.valueOf(definition['severity'] as String)
-            documentationLink = definition['documentationLink'] == null ? null : new ReceivedDocumentationLink(definition['documentationLink'] as Map<String, Object>)
+            documentationLink = definition['documentationLink'] ==  null ? null : new ReceivedDocumentationLink(definition['documentationLink'] as Map<String, Object>)
         }
 
         @Override
@@ -183,7 +182,7 @@ class ReceivedProblem implements InternalProblem {
         }
 
         @Override
-        ReceivedDocumentationLink getDocumentationLink() {
+        DocLink getDocumentationLink() {
             documentationLink
         }
     }
@@ -192,16 +191,32 @@ class ReceivedProblem implements InternalProblem {
         private final String name
         private final String displayName
         private final ReceivedProblemGroup group
+        private final String fqid
 
         ReceivedProblemId(Map<String, Object> id) {
             name = id['name'] as String
             displayName = id['displayName'] as String
             group = new ReceivedProblemGroup(id['group'] as Map<String, Object>)
+            fqid = fqid(id)
+        }
+
+        private static String fqid(Map<String, Object> id) {
+            String result = id['name']
+            def parent = id['group']
+            while (parent != null) {
+                result = "${parent['name']}:$result"
+                parent = parent['parent']
+            }
+            result
+        }
+
+        String getFqid() {
+            fqid
         }
 
         @Override
         String getName() {
-            name
+           name
         }
 
         @Override
@@ -212,16 +227,6 @@ class ReceivedProblem implements InternalProblem {
         @Override
         ReceivedProblemGroup getGroup() {
             group
-        }
-
-        String getFqid() {
-            List<String> groupNames = [name]
-            ReceivedProblemGroup parentGroup = group
-            while (parentGroup != null) {
-                groupNames << parentGroup.name
-                parentGroup = parentGroup.parent
-            }
-            return groupNames.reverse().join(':')
         }
     }
 
@@ -356,7 +361,7 @@ class ReceivedProblem implements InternalProblem {
     static class ReceivedPluginIdLocation implements PluginIdLocation {
         private final String pluginId
 
-        ReceivedPluginIdLocation(Map<String, Object> location) {
+        ReceivedPluginIdLocation(Map<String, String> location) {
             this.pluginId = location['pluginId'] as String
         }
 
