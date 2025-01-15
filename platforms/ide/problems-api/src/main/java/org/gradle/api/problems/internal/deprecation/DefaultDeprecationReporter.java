@@ -36,21 +36,27 @@ public class DefaultDeprecationReporter implements DeprecationReporter {
     public Problem deprecate(String label, Action<DeprecateGenericSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
         spec.execute(deprecationBuilder);
-        return deprecationBuilder.build();
+        return reportBuiltProblem(deprecationBuilder);
     }
 
     @Override
     public Problem deprecateMethod(String method, Action<DeprecateMethodSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
         spec.execute(deprecationBuilder);
-        return deprecationBuilder.build();
+        return reportBuiltProblem(deprecationBuilder);
     }
 
     @Override
     public Problem deprecatePlugin(String pluginId, Action<DeprecatePluginSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
         spec.execute(deprecationBuilder);
-        return deprecationBuilder.build();
+        return reportBuiltProblem(deprecationBuilder);
+    }
+
+    private Problem reportBuiltProblem(DefaultDeprecationBuilder builder) {
+        Problem deprecationProblem = builder.build();
+        reporter.report(deprecationProblem);
+        return deprecationProblem;
     }
 
 }
