@@ -21,13 +21,14 @@ import org.gradle.api.Incubating;
 import javax.annotation.Nullable;
 
 /**
- * Common specification for building deprecations
+ * Common, shared specification for other deprecation specs to build upon.
  *
  * @param <T> the subtype of the deprecation spec
  * @since 8.13
  */
 @Incubating
 public interface CommonDeprecationSpec<T extends CommonDeprecationSpec<?>> {
+
     /**
      * Declares the replacement for the deprecated behavior.
      *
