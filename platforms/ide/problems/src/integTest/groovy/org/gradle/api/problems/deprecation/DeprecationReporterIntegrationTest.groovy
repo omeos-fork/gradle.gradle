@@ -62,10 +62,10 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
         given:
         javaFile("deprecation-plugin/src/main/java/DeprecationPlugin.java", """
             import org.gradle.api.Plugin;
-import org.gradle.api.Project;
-import org.gradle.api.problems.Problems;
+            import org.gradle.api.Project;
+            import org.gradle.api.problems.Problems;
 
-import javax.inject.Inject;
+            import javax.inject.Inject;
 
             public abstract class DeprecationPlugin implements Plugin<Project> {
                 @Inject
