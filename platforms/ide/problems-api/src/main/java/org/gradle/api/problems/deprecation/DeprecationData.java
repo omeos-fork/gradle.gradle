@@ -16,15 +16,15 @@
 
 package org.gradle.api.problems.deprecation;
 
-import org.gradle.api.problems.internal.AdditionalData;
+
+import org.gradle.api.problems.AdditionalData;
 
 import javax.annotation.Nullable;
 
 /**
  * Additional data shipped with a deprecation.
  * <p>
- * Not required by deprecation reporters.
- * This class can be used by consumers to gather additional information about the deprecation.
+ * This data is accessible, after reporting the deprecation, to consumers of problem events.
  *
  * @since 8.13
  */
