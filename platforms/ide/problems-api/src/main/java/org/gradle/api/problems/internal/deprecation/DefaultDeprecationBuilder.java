@@ -63,6 +63,10 @@ class DefaultDeprecationBuilder implements DeprecateGenericSpec, DeprecatePlugin
         return this;
     }
 
+    public InternalProblemBuilder getProblemBuilder() {
+        return builder;
+    }
+
     public Problem build() {
         builder.additionalData(additionalDataBuilder.build());
         return builder.build();
