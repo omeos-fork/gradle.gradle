@@ -21,6 +21,6 @@ package org.gradle.api.problems.deprecation;
  *
  * @since 8.13
  */
-public interface DeprecatePluginSpec extends CommonDeprecationSpec<DeprecatePluginSpec> {
+public interface DeprecatePluginSpec extends DeprecateGenericSpec {
 
 }

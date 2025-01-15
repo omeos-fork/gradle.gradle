@@ -20,7 +20,7 @@ import org.gradle.api.problems.deprecation.OpaqueDeprecatedVersion;
 
 import javax.annotation.Nullable;
 
-public class DefaultOpaqueDeprecatedVersion implements OpaqueDeprecatedVersion {
+class DefaultOpaqueDeprecatedVersion implements OpaqueDeprecatedVersion {
 
     private final String opaqueVersion;
 

@@ -20,13 +20,13 @@ import org.gradle.api.problems.deprecation.SemverDeprecatedVersion;
 
 import javax.annotation.Nullable;
 
-public class DefaultSemverDeprecatedVersion implements SemverDeprecatedVersion {
+class DefaultSemverDeprecatedVersion implements SemverDeprecatedVersion {
 
     private final Integer major;
     private final Integer minor;
     private final String patch;
 
-    public DefaultSemverDeprecatedVersion(Integer major, Integer minor, String patch) {
+    public DefaultSemverDeprecatedVersion(Integer major, @Nullable Integer minor, @Nullable String patch) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;

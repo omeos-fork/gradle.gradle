@@ -5,5 +5,5 @@ package org.gradle.api.problems.deprecation;
  *
  * @since 8.13
  */
-public interface DeprecateMethodSpec extends CommonDeprecationSpec<DeprecateMethodSpec> {
+public interface DeprecateMethodSpec extends DeprecateGenericSpec {
 }

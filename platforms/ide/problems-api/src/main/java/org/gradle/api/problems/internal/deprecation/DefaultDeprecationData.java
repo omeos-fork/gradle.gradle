@@ -16,14 +16,13 @@
 
 package org.gradle.api.problems.internal.deprecation;
 
+import org.gradle.api.problems.deprecation.DeprecatedVersion;
 import org.gradle.api.problems.deprecation.DeprecationData;
 import org.gradle.api.problems.deprecation.DeprecationDataSpec;
-import org.gradle.api.problems.deprecation.DeprecatedVersion;
-import org.gradle.api.problems.internal.AdditionalDataBuilder;
 
 import javax.annotation.Nullable;
 
-public class DefaultDeprecationData implements DeprecationData {
+class DefaultDeprecationData implements DeprecationData {
 
     private final DeprecatedVersion removedIn;
     private final String replacedBy;
@@ -36,43 +35,27 @@ public class DefaultDeprecationData implements DeprecationData {
     }
 
     @Override
+    @Nullable
     public DeprecatedVersion getRemovedIn() {
         return removedIn;
     }
 
     @Override
+    @Nullable
     public String getReplacedBy() {
         return replacedBy;
     }
 
     @Override
+    @Nullable
     public String getBecause() {
         return reason;
     }
 
-    public static AdditionalDataBuilder<DeprecationData> builder(@Nullable DeprecationData from) {
-        if(from == null) {
-            return new DefaultDeprecationData.DefaultDeprecationDataBuilder();
-        }
-        return new DefaultDeprecationData.DefaultDeprecationDataBuilder(from);
-    }
-
-    private static class DefaultDeprecationDataBuilder implements DeprecationDataSpec, AdditionalDataBuilder<DeprecationData> {
-        @Nullable
-        private DeprecatedVersion removedIn = null;
-        @Nullable
-        private String replacedBy = null;
-        @Nullable
-        private String because = null;
-
-        public DefaultDeprecationDataBuilder() {
-        }
-
-        public DefaultDeprecationDataBuilder(DeprecationData from) {
-            this.removedIn = from.getRemovedIn();
-            this.replacedBy = from.getReplacedBy();
-            this.because = from.getBecause();
-        }
+    static class Builder implements DeprecationDataSpec {
+        private DeprecatedVersion removedIn;
+        private String replacedBy;
+        private String reason;
 
         @Override
         public DeprecationDataSpec removedIn(DeprecatedVersion version) {
@@ -88,13 +71,13 @@ public class DefaultDeprecationData implements DeprecationData {
 
         @Override
         public DeprecationDataSpec because(String reason) {
-            this.because = reason;
+            this.reason = reason;
             return this;
         }
 
-        @Override
         public DeprecationData build() {
-            return new DefaultDeprecationData(removedIn, replacedBy, because);
+            return new DefaultDeprecationData(removedIn, replacedBy, reason);
         }
     }
+
 }
