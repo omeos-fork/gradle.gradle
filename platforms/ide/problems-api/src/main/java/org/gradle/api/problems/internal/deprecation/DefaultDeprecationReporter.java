@@ -23,6 +23,7 @@ import org.gradle.api.problems.deprecation.DeprecateMethodSpec;
 import org.gradle.api.problems.deprecation.DeprecatePluginSpec;
 import org.gradle.api.problems.deprecation.DeprecationReporter;
 import org.gradle.api.problems.internal.DefaultProblemReporter;
+import org.gradle.api.problems.internal.GradleCoreProblemGroup;
 
 public class DefaultDeprecationReporter implements DeprecationReporter {
 
@@ -35,6 +36,9 @@ public class DefaultDeprecationReporter implements DeprecationReporter {
     @Override
     public Problem deprecate(String label, Action<DeprecateGenericSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
+        deprecationBuilder.getProblemBuilder()
+            .id("generic", "Generic deprecation", GradleCoreProblemGroup.deprecation())
+            .contextualLabel(label);
         spec.execute(deprecationBuilder);
         return reportBuiltProblem(deprecationBuilder);
     }
@@ -42,6 +46,11 @@ public class DefaultDeprecationReporter implements DeprecationReporter {
     @Override
     public Problem deprecateMethod(String method, Action<DeprecateMethodSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
+        deprecationBuilder.getProblemBuilder()
+            .id("method", "Method deprecation", GradleCoreProblemGroup.deprecation())
+            .contextualLabel(
+                String.format("Method '%s' is deprecated", method)
+            );
         spec.execute(deprecationBuilder);
         return reportBuiltProblem(deprecationBuilder);
     }
@@ -49,6 +58,11 @@ public class DefaultDeprecationReporter implements DeprecationReporter {
     @Override
     public Problem deprecatePlugin(String pluginId, Action<DeprecatePluginSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
+        deprecationBuilder.getProblemBuilder()
+            .id("plugin", "Plugin deprecation", GradleCoreProblemGroup.deprecation())
+            .contextualLabel(
+                String.format("Plugin '%s' is deprecated", pluginId)
+            );
         spec.execute(deprecationBuilder);
         return reportBuiltProblem(deprecationBuilder);
     }

@@ -81,7 +81,7 @@ class KnownProblemIds {
         'compilation:java:compiler-warn-.+' : 'Java compilation warning',
         'compilation:java:compiler-note-.+' : 'Java compilation note',
         'compilation:java:initialization-failed': 'Java compilation initialization error',
-        // Deprecation-logger groups
+        // Version catalog groups
         'dependency-version-catalog:alias-not-finished' : 'version catalog error',
         'dependency-version-catalog:invalid-dependency-notation' : 'Dependency version catalog problem',
         'dependency-version-catalog:reserved-alias-name' : 'version catalog error',
@@ -91,9 +91,9 @@ class KnownProblemIds {
         'dependency-version-catalog:too-many-import-invocation' : 'version catalog error',
         'dependency-version-catalog:no-import-files' : 'version catalog error',
         // New deprecation API groups
-        'deprecation:generic': 'Deprecation',
-        'deprecation:method': 'Deprecated method',
-        'deprecation:plugin': 'Deprecated plugin',
+        'deprecation:generic': 'Generic deprecation',
+        'deprecation:method': 'Method deprecation',
+        'deprecation:plugin': 'Plugin deprecation',
         // DeprecationLogger groups
         'deprecation-logger:buildsrc-script' : 'BuildSrc script has been deprecated.',
         'deprecation-logger:creating-a-configuration-with-a-name-that-starts-with-detachedconfiguration' : 'Creating a configuration with a name that starts with \'detachedConfiguration\' has been deprecated.',

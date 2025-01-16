@@ -91,7 +91,7 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
         then:
         def deprecation = receivedProblem
         deprecation.definition.id.fqid == "deprecation:generic"
-        deprecation.definition.id.displayName == "Deprecation"
+        deprecation.definition.id.displayName == "Generic deprecation"
         deprecation.contextualLabel == "Generic deprecation message"
         verifyAll(deprecation.additionalData.asMap) {
             it["because"] == "Reasoning of removal"
