@@ -45,7 +45,7 @@ public interface DeprecationReporter {
      * @param spec a spec to configure the deprecation
      * @return a problem representing the deprecation
      */
-    Problem deprecateMethod(String method, Action<DeprecateMethodSpec> spec);
+    Problem deprecateMethod(Class<?> containingClass, String signature, Action<DeprecateMethodSpec> spec);
 
     /**
      * Deprecates a given plugin.

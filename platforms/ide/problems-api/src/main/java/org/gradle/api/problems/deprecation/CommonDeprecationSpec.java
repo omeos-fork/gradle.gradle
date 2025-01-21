@@ -53,15 +53,24 @@ public interface CommonDeprecationSpec<T extends CommonDeprecationSpec<?>> {
     /**
      * Declares from what version the deprecated behavior will be removed.
      * <p>
+     * This versioning scheme follows the Maven versioning scheme.
+     * For example, the version "1.2.3-SNAPSHOT" would be represented as:
+     * <ul>
+     *     <li>major: 1</li>
+     *     <li>minor: 2</li>
+     *     <li>patch: 3</li>
+     *     <li>qualifier: "SNAPSHOT"</li>
+     * <p>
      * When using this version, we can provide additional intelligence in the reports like finding lower bounds of versions reported.
      *
-     * @param major the major version from which the deprecated behavior will be removed
-     * @param minor the minor version from which the deprecated behavior will be removed
-     * @param patch the patch version from which the deprecated behavior will be removed
+     * @param major the major component of the version
+     * @param minor the minor component of the version
+     * @param patch the patch component of the version
+     * @param qualifier the qualifier component of the version
      * @return the fluent builder used to call this
      * @since 8.13
      */
-    T removedInVersion(Integer major, @Nullable Integer minor, @Nullable String patch);
+    T removedInVersion(Integer major, @Nullable Integer minor, @Nullable Integer patch, @Nullable String qualifier);
 
     /**
      * Declares an optional reasoning why the deprecation is happening.

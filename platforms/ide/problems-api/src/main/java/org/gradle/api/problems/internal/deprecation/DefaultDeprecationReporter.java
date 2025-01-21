@@ -44,12 +44,12 @@ public class DefaultDeprecationReporter implements DeprecationReporter {
     }
 
     @Override
-    public Problem deprecateMethod(String method, Action<DeprecateMethodSpec> spec) {
+    public Problem deprecateMethod(Class<?> containingClass, String signature, Action<DeprecateMethodSpec> spec) {
         DefaultDeprecationBuilder deprecationBuilder = new DefaultDeprecationBuilder(reporter.createProblemBuilder());
         deprecationBuilder.getProblemBuilder()
             .id("method", "Method deprecation", GradleCoreProblemGroup.deprecation())
             .contextualLabel(
-                String.format("Method '%s' is deprecated", method)
+                String.format("Method '%s#%s' is deprecated", containingClass.getName(), signature)
             );
         spec.execute(deprecationBuilder);
         return reportBuiltProblem(deprecationBuilder);

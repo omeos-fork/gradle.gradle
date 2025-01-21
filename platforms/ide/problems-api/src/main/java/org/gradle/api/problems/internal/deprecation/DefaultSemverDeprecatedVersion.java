@@ -24,28 +24,36 @@ class DefaultSemverDeprecatedVersion implements SemverDeprecatedVersion {
 
     private final Integer major;
     private final Integer minor;
-    private final String patch;
+    private final Integer patch;
+    private final String qualifier;
 
-    public DefaultSemverDeprecatedVersion(Integer major, @Nullable Integer minor, @Nullable String patch) {
+    public DefaultSemverDeprecatedVersion(Integer major, @Nullable Integer minor, @Nullable Integer patch, @Nullable String qualifier) {
         this.major = major;
         this.minor = minor;
         this.patch = patch;
+        this.qualifier = qualifier;
     }
 
     @Override
-    public Integer getSemverMajor() {
+    public Integer getMajor() {
         return major;
     }
 
     @Nullable
     @Override
-    public Integer getSemverMinor() {
+    public Integer getMinor() {
         return minor;
     }
 
     @Nullable
     @Override
-    public String getSemverPatch() {
+    public Integer getPatch() {
         return patch;
+    }
+
+    @Nullable
+    @Override
+    public String getQualifier() {
+        return qualifier;
     }
 }

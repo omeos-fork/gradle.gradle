@@ -46,8 +46,8 @@ class DefaultDeprecationBuilder implements DeprecateGenericSpec, DeprecatePlugin
     }
 
     @Override
-    public DefaultDeprecationBuilder removedInVersion(Integer major, @Nullable Integer minor, @Nullable String patch) {
-        additionalDataBuilder.removedIn(new DefaultSemverDeprecatedVersion(major, minor, patch));
+    public DeprecateGenericSpec removedInVersion(Integer major, @Nullable Integer minor, @Nullable Integer patch, @Nullable String qualifier) {
+        additionalDataBuilder.removedIn(new DefaultSemverDeprecatedVersion(major, minor, patch, qualifier));
         return this;
     }
 
