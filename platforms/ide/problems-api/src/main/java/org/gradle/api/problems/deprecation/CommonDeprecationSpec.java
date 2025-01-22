@@ -39,7 +39,7 @@ public interface CommonDeprecationSpec<T extends CommonDeprecationSpec<?>> {
     T replacedBy(String replacement);
 
     /**
-     * Declares from what opaqueVersion the deprecated behavior will be removed.
+     * Declares in which version the deprecated item will be removed.
      * <p>
      * <b>Note:</b> use this only when other version patterns are not fitting.
      * When an opaque version is used, we cannot provide additional intelligence in the reports.
@@ -47,11 +47,12 @@ public interface CommonDeprecationSpec<T extends CommonDeprecationSpec<?>> {
      * @param opaqueVersion the version from which the deprecated behavior will be removed. E.g. "version-1.2.3"
      * @return the fluent builder used to call this
      * @since 8.13
+     * @see OpaqueDeprecatedVersion
      */
     T removedInVersion(String opaqueVersion);
 
     /**
-     * Declares from what version the deprecated behavior will be removed.
+     * Declares in which version the deprecated item will be removed.
      * <p>
      * This versioning scheme follows the Maven versioning scheme.
      * For example, the version "1.2.3-SNAPSHOT" would be represented as:
