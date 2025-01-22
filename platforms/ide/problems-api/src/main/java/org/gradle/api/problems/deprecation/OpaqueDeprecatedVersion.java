@@ -32,6 +32,6 @@ import javax.annotation.Nullable;
 public interface OpaqueDeprecatedVersion extends DeprecatedVersion {
 
     @Nullable
-    String getOpaqueVersion();
+    String getVersion();
 
 }

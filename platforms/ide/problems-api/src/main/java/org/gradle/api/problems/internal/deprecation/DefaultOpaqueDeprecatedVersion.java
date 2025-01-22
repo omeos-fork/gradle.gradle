@@ -30,7 +30,7 @@ class DefaultOpaqueDeprecatedVersion implements OpaqueDeprecatedVersion {
 
     @Nullable
     @Override
-    public String getOpaqueVersion() {
+    public String getVersion() {
         return opaqueVersion;
     }
 
