@@ -29,7 +29,7 @@ import org.gradle.api.problems.Problem;
 public interface DeprecationReporter {
 
     /**
-     * Generic deprecation
+     * Generic deprecation, using {@code message} to describe the deprecation.
      *
      * @param message a message for the deprecation; it should state the deprecation, but not the reason (e.g. "Plugin 'plugin' is deprecated")
      * @param feature a spec to configure the deprecation
@@ -38,17 +38,17 @@ public interface DeprecationReporter {
     Problem deprecate(String message, Action<DeprecateGenericSpec> feature);
 
     /**
-     * Deprecates a given method.
-     * <p>
-     * Representation of the signature is created by the called.
+     * Declares a deprecated method (represented by {@code signature}) in the class {@code containingClass}
      *
+     * @param signature the signature of the method to deprecate. E.g. "method(String, int)"
+     * @param containingClass the class containing the method to deprecate
      * @param spec a spec to configure the deprecation
      * @return a problem representing the deprecation
      */
     Problem deprecateMethod(Class<?> containingClass, String signature, Action<DeprecateMethodSpec> spec);
 
     /**
-     * Deprecates a given plugin.
+     * Declares a plugin deprecation for {@code pluginId}
      *
      * @param pluginId the id of the plugin to deprecate
      * @param spec a spec to configure the deprecation
