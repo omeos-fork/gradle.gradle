@@ -96,7 +96,7 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
         verifyAll(deprecation.additionalData.asMap) {
             it["because"] == "Reasoning of removal"
             it["replacedBy"] == "newMethod(String, String)"
-            it["removedIn"]["opaqueVersion"] == "2.0.0"
+            it["removedIn"]["version"] == "2.0.0"
         }
     }
 
@@ -104,10 +104,10 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
         given:
         javaFile("deprecation-plugin/src/main/java/DeprecationPlugin.java", """
             import org.gradle.api.Plugin;
-            import org.gradle.api.Project;
-            import org.gradle.api.problems.Problems;
+import org.gradle.api.Project;
+import org.gradle.api.problems.Problems;
 
-            import javax.inject.Inject;
+import javax.inject.Inject;
 
             public abstract class DeprecationPlugin implements Plugin<Project> {
                 @Inject
@@ -116,10 +116,11 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
                 @Override
                 public void apply(Project project) {
                     // Report the plugin as deprecated
-                    getProblems().getDeprecationReporter().deprecateMethod("oldMethod(String, String)", feature -> feature
-                        .because("Reasoning of removal")
-                        .removedInVersion("2.0.0")
-                        .replacedBy("newMethod(String, String)")
+                    getProblems().getDeprecationReporter().deprecateMethod(
+                        this.getClass(), "oldMethod(String, String)", feature -> feature
+                            .because("Reasoning of removal")
+                            .removedInVersion("2.0.0")
+                            .replacedBy("newMethod(String, String)")
                     );
                 }
             }
@@ -131,11 +132,11 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
         then:
         def deprecation = receivedProblem
         deprecation.definition.id.fqid == "deprecation:method"
-        deprecation.contextualLabel == "Method 'oldMethod(String, String)' is deprecated"
+        deprecation.contextualLabel == "Method 'DeprecationPlugin_Decorated#oldMethod(String, String)' is deprecated"
         verifyAll(deprecation.additionalData.asMap) {
             it["because"] == "Reasoning of removal"
             it["replacedBy"] == "newMethod(String, String)"
-            it["removedIn"]["opaqueVersion"] == "2.0.0"
+            it["removedIn"]["version"] == "2.0.0"
         }
     }
 
@@ -176,7 +177,7 @@ class DeprecationReporterIntegrationTest extends AbstractIntegrationSpec {
         verifyAll(deprecation.additionalData.asMap) {
             it["because"] == "Reasoning of removal"
             it["replacedBy"] == "plugin-other"
-            it["removedIn"]["opaqueVersion"] == "2.0.0"
+            it["removedIn"]["version"] == "2.0.0"
         }
     }
 
