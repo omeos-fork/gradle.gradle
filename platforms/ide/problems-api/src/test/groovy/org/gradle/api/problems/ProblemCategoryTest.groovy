@@ -35,7 +35,7 @@ class ProblemCategoryTest extends Specification {
         where:
         namespace                 | category        | subcategory       | expectedToString
         'org.gradle'              | 'deprecation'   | []                | 'org.gradle:deprecation'
-        'gradle.plugin'           | 'deprecation'   | ['sub']           | 'gradle.plugin:deprecation:sub'
+        'gradle.plugin'           | 'deprecation'   | ['sub']           | 'gradle.plugin:deprecation-logger:sub'
         'org.gradle'              | 'some-category' | ['sub', 'subsub'] | 'org.gradle:some-category:sub:subsub'
     }
 }
