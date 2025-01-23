@@ -22,7 +22,7 @@ public abstract class GradleCoreProblemGroup {
 
     private static final DefaultCompilationProblemGroup COMPILATION_PROBLEM_GROUP = new DefaultCompilationProblemGroup();
     private static final ProblemGroup DEPRECATION_PROBLEM_GROUP = ProblemGroup.create("deprecation", "Deprecation");
-    private static final DefaultProblemGroup DEPRECATION_LOGGER_GROUP = new DefaultProblemGroup("deprecation-logger", "Deprecation");
+    private static final ProblemGroup DEPRECATION_LOGGER_GROUP = ProblemGroup.create("deprecation-logger", "Deprecation");
     private static final DefaultValidationProblemGroup VALIDATION_PROBLEM_GROUP = new DefaultValidationProblemGroup();
     private static final ProblemGroup PLUGIN_APPLICATION_PROBLEM_GROUP = ProblemGroup.create("plugin-application", "Plugin application");
     private static final ProblemGroup TASK_SELECTION_PROBLEM_GROUP = ProblemGroup.create("task-selection", "Task selection");
