@@ -50,6 +50,7 @@ class KnownProblemIds {
         'validation' : 'Validation',
         'compilation' : 'Compilation',
         'deprecation' : 'Deprecation',
+        'deprecation-logger': 'Deprecation',
         'compilation:java' : 'Java compilation',
         'plugin-application' : 'Plugin application',
         'task-selection' : 'Task selection',
