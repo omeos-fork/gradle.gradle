@@ -165,10 +165,10 @@ class KnownProblemIds {
         'dependency-variant-resolution:unknown-resolution-failure' : 'Unknown resolution failure',
 
         // integration test problems
-        'deprecation:some-indirect-deprecation' : 'Some indirect deprecation has been deprecated.',
-        'deprecation:some-invocation-feature' : 'Some invocation feature has been deprecated.',
-        'deprecation:thing' : 'Thing has been deprecated.',
-        'deprecation:typed-task' : 'Typed task has been deprecated.',
+        'deprecation-logger:some-indirect-deprecation' : 'Some indirect deprecation has been deprecated.',
+        'deprecation-logger:some-invocation-feature' : 'Some invocation feature has been deprecated.',
+        'deprecation-logger:thing' : 'Thing has been deprecated.',
+        'deprecation-logger:typed-task' : 'Typed task has been deprecated.',
         'generic:deprecation:plugin' : 'DisplayName',
         'generic:type' : 'label',
         'generic:type0': 'This is the heading problem text0',
