@@ -71,9 +71,9 @@ dependencies {
         api(libs.commonsLang3)          { version { strictly("3.14.0") }}
         api(libs.commonsMath)           { version { strictly("3.6.1") }}
         api(libs.eclipseSisuPlexus)     { version { strictly("0.3.5"); because("transitive dependency of Maven modules to process POM metadata") }}
-        api(libs.errorProneAnnotations) { version { strictly("2.29.0") }}
+        api(libs.errorProneAnnotations) { version { strictly("2.36.0") }}
         api(libs.fastutil)              { version { strictly("8.5.2") }}
-        api(libs.gradleFileEvents)      { version { strictly("0.2.5") }}
+        api(libs.gradleFileEvents)      { version { strictly("0.2.6") }}
         api(libs.gradleProfiler)        { version { strictly("0.21.0-alpha-4") }}
         api(libs.develocityTestAnnotation) { version { strictly("2.0.1") }}
         api(libs.gcs)                   { version { strictly("v1-rev20220705-1.32.1") }}
@@ -171,7 +171,7 @@ dependencies {
         api(libs.zinc)                  { version { strictly("1.10.4") } }
 
         // test only
-        api(libs.aircompressor)         { version { strictly("0.8") }}
+        api(libs.aircompressor)         { version { strictly("0.27") }}
         api(libs.archunit)              { version { strictly(archunitVersion) }}
         api(libs.archunitJunit5)        { version { strictly(archunitVersion) }}
         api(libs.archunitJunit5Api)     { version { strictly(archunitVersion) }}
@@ -214,7 +214,7 @@ dependencies {
         api(libs.opentest4j)            { version { strictly("1.3.0") }}
         api(libs.samplesCheck)          { version { strictly("1.0.0") }}
         api(libs.samplesDiscovery)      { version { strictly("1.0.0") }}
-        api(libs.snappy)                { version { strictly("0.4") }}
+        api(libs.snappy)                { version { strictly("0.5") }}
         api(libs.socksProxy)            { version { strictly("2.0.0") }}
         api(libs.spock)                 { version { strictly(spockVersion) }}
         api(libs.spockJUnit4)           { version { strictly(spockVersion) }}

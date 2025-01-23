@@ -1,6 +1,14 @@
 <meta property="og:image" content="" />
-<meta property="og:type"  content="website" />
-<meta property="og:title" content="" />
+<meta property="og:type"  content="article" />
+<meta property="og:title" content="Gradle X Release Notes" />
+<meta property="og:site_name" content="Gradle Release Notes">
+<meta property="og:description" content="TBD">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@gradle">
+<meta name="twitter:creator" content="@gradle">
+<meta name="twitter:title" content="Gradle X Release Notes">
+<meta name="twitter:description" content="TBD">
+<meta name="twitter:image" content="">
 
 The Gradle team is excited to announce Gradle @version@.
 
@@ -71,7 +79,7 @@ ADD RELEASE FEATURES ABOVE
 
 ## Promoted features
 Promoted features are features that were incubating in previous versions of Gradle but are now supported and subject to backward compatibility.
-See the User Manual section on the “[Feature Lifecycle](userguide/feature_lifecycle.html)” for more information.
+See the User Manual section on the "[Feature Lifecycle](userguide/feature_lifecycle.html)" for more information.
 
 The following are the features that have been promoted in this Gradle release.
 

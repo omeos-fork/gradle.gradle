@@ -16,7 +16,6 @@
 
 package org.gradle.jvm.internal.services;
 
-import net.rubygrapefruit.platform.SystemInfo;
 import org.gradle.api.internal.file.FileOperations;
 import org.gradle.api.internal.file.FileResolver;
 import org.gradle.api.internal.file.temp.GradleUserHomeTemporaryFileProvider;
@@ -40,8 +39,11 @@ import org.gradle.internal.service.ServiceRegistration;
 import org.gradle.internal.service.ServiceRegistrationProvider;
 import org.gradle.internal.service.scopes.AbstractGradleModuleServices;
 import org.gradle.jvm.toolchain.JavaToolchainResolverRegistry;
+import org.gradle.jvm.toolchain.JvmToolchainManagement;
 import org.gradle.jvm.toolchain.internal.AsdfInstallationSupplier;
+import org.gradle.jvm.toolchain.internal.CurrentBuildPlatform;
 import org.gradle.jvm.toolchain.internal.DefaultJavaToolchainResolverRegistry;
+import org.gradle.jvm.toolchain.internal.DefaultJavaToolchainResolverService;
 import org.gradle.jvm.toolchain.internal.DefaultJavaToolchainService;
 import org.gradle.jvm.toolchain.internal.DefaultJvmToolchainManagement;
 import org.gradle.jvm.toolchain.internal.DefaultOsXJavaHomeCommand;
@@ -49,17 +51,18 @@ import org.gradle.jvm.toolchain.internal.InstallationSupplier;
 import org.gradle.jvm.toolchain.internal.IntellijInstallationSupplier;
 import org.gradle.jvm.toolchain.internal.JabbaInstallationSupplier;
 import org.gradle.jvm.toolchain.internal.JavaToolchainQueryService;
+import org.gradle.jvm.toolchain.internal.JavaToolchainResolverRegistryInternal;
 import org.gradle.jvm.toolchain.internal.JdkCacheDirectory;
 import org.gradle.jvm.toolchain.internal.LinuxInstallationSupplier;
 import org.gradle.jvm.toolchain.internal.MavenToolchainsInstallationSupplier;
 import org.gradle.jvm.toolchain.internal.OsXInstallationSupplier;
+import org.gradle.jvm.toolchain.internal.OsXJavaHomeCommand;
 import org.gradle.jvm.toolchain.internal.SdkmanInstallationSupplier;
 import org.gradle.jvm.toolchain.internal.ToolchainConfiguration;
 import org.gradle.jvm.toolchain.internal.WindowsInstallationSupplier;
 import org.gradle.jvm.toolchain.internal.install.DefaultJavaToolchainProvisioningService;
 import org.gradle.jvm.toolchain.internal.install.DefaultJdkCacheDirectory;
 import org.gradle.jvm.toolchain.internal.install.SecureFileDownloader;
-import org.gradle.platform.internal.DefaultBuildPlatform;
 import org.gradle.process.internal.ClientExecHandleBuilderFactory;
 
 import java.util.List;
@@ -68,12 +71,7 @@ public class ToolchainsJvmServices extends AbstractGradleModuleServices {
     protected static class BuildServices implements ServiceRegistrationProvider {
 
         @Provides
-        protected DefaultBuildPlatform createBuildPlatform(ObjectFactory objectFactory, SystemInfo systemInfo, OperatingSystem operatingSystem) {
-            return objectFactory.newInstance(DefaultBuildPlatform.class, systemInfo, operatingSystem);
-        }
-
-        @Provides
-        protected DefaultJavaToolchainResolverRegistry createJavaToolchainResolverRegistry(
+        protected JavaToolchainResolverRegistryInternal createJavaToolchainResolverRegistry(
             Gradle gradle,
             Instantiator instantiator,
             ObjectFactory objectFactory,
@@ -83,7 +81,7 @@ public class ToolchainsJvmServices extends AbstractGradleModuleServices {
         }
 
         @Provides
-        protected DefaultJvmToolchainManagement createToolchainManagement(ObjectFactory objectFactory, JavaToolchainResolverRegistry registry) {
+        protected JvmToolchainManagement createToolchainManagement(ObjectFactory objectFactory, JavaToolchainResolverRegistry registry) {
             return objectFactory.newInstance(DefaultJvmToolchainManagement.class, registry);
         }
 
@@ -98,20 +96,25 @@ public class ToolchainsJvmServices extends AbstractGradleModuleServices {
         }
 
         public void configure(ServiceRegistration registration) {
-            registration.add(ProviderBackedToolchainConfiguration.class);
-            registration.add(DefaultOsXJavaHomeCommand.class);
+            registration.add(ToolchainConfiguration.class, ProviderBackedToolchainConfiguration.class);
+            registration.add(OsXJavaHomeCommand.class, DefaultOsXJavaHomeCommand.class);
 
             // NOTE: These need to be kept in sync with DaemonClientToolchainServices
-            registration.add(AsdfInstallationSupplier.class);
-            registration.add(IntellijInstallationSupplier.class);
-            registration.add(JabbaInstallationSupplier.class);
-            registration.add(SdkmanInstallationSupplier.class);
-            registration.add(MavenToolchainsInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, AsdfInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, IntellijInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, JabbaInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, SdkmanInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, MavenToolchainsInstallationSupplier.class);
 
-            registration.add(LinuxInstallationSupplier.class);
-            registration.add(OsXInstallationSupplier.class);
-            registration.add(WindowsInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, LinuxInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, OsXInstallationSupplier.class);
+            registration.add(InstallationSupplier.class, WindowsInstallationSupplier.class);
         }
+    }
+
+    @Override
+    public void registerGlobalServices(ServiceRegistration registration) {
+        registration.add(CurrentBuildPlatform.class);
     }
 
     @Override
@@ -126,6 +129,7 @@ public class ToolchainsJvmServices extends AbstractGradleModuleServices {
 
     @Override
     public void registerProjectServices(ServiceRegistration registration) {
+        registration.add(DefaultJavaToolchainResolverService.class);
         registration.add(DefaultJavaToolchainService.class);
         registration.add(DefaultJavaToolchainProvisioningService.class);
         registration.add(SecureFileDownloader.class);

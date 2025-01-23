@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableList;
 import org.gradle.api.internal.tasks.userinput.UserInputReader;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
+import org.gradle.cache.internal.locklistener.FileLockContentionHandler;
 import org.gradle.internal.concurrent.ExecutorFactory;
 import org.gradle.internal.event.ListenerManager;
 import org.gradle.internal.instrumentation.agent.AgentStatus;
@@ -66,12 +67,6 @@ import org.gradle.launcher.daemon.server.scaninfo.DefaultDaemonScanInfo;
 import org.gradle.launcher.daemon.server.stats.DaemonRunningStats;
 import org.gradle.launcher.exec.BuildExecutor;
 import org.gradle.tooling.internal.provider.action.BuildActionSerializer;
-import org.gradle.tooling.internal.provider.serialization.ClassLoaderCache;
-import org.gradle.tooling.internal.provider.serialization.DefaultPayloadClassLoaderFactory;
-import org.gradle.tooling.internal.provider.serialization.DefaultPayloadClassLoaderRegistry;
-import org.gradle.tooling.internal.provider.serialization.LazyPayloadSerializerContainer;
-import org.gradle.tooling.internal.provider.serialization.PayloadSerializer;
-import org.gradle.tooling.internal.provider.serialization.WellKnownClassLoaderRegistry;
 
 import java.io.File;
 import java.util.UUID;
@@ -131,8 +126,8 @@ public class DaemonServices implements ServiceRegistrationProvider {
     }
 
     @Provides
-    protected MasterExpirationStrategy createMasterExpirationStrategy(Daemon daemon, HealthExpirationStrategy healthExpirationStrategy, ListenerManager listenerManager) {
-        return new MasterExpirationStrategy(daemon, configuration, healthExpirationStrategy, listenerManager);
+    protected MasterExpirationStrategy createMasterExpirationStrategy(Daemon daemon, HealthExpirationStrategy healthExpirationStrategy, FileLockContentionHandler fileLockContentionHandler, ListenerManager listenerManager) {
+        return new MasterExpirationStrategy(daemon, configuration, healthExpirationStrategy, fileLockContentionHandler, listenerManager);
     }
 
     @Provides
@@ -190,23 +185,6 @@ public class DaemonServices implements ServiceRegistrationProvider {
         return BuildActionSerializer.create();
     }
 
-    static class DaemonLazyPayloadSerializerContainer implements LazyPayloadSerializerContainer {
-        private PayloadSerializer payloadSerializer;
-
-        @Override
-        public PayloadSerializer get() {
-            if (payloadSerializer == null) {
-                ClassLoaderCache classLoaderCache = new ClassLoaderCache();
-                payloadSerializer = new PayloadSerializer(
-                    new WellKnownClassLoaderRegistry(
-                        new DefaultPayloadClassLoaderRegistry(
-                            classLoaderCache,
-                            new DefaultPayloadClassLoaderFactory())));
-            }
-            return payloadSerializer;
-        }
-    }
-
     @Provides
     protected Daemon createDaemon(
         ImmutableList<DaemonCommandAction> actions,
@@ -217,13 +195,11 @@ public class DaemonServices implements ServiceRegistrationProvider {
         DaemonContext daemonContext,
         ListenerManager listenerManager
     ) {
-        LazyPayloadSerializerContainer lazyPayloadSerializerContainer = new DaemonLazyPayloadSerializerContainer();
-
         return new Daemon(
             new DaemonTcpServerConnector(
                 executorFactory,
                 inetAddressFactory,
-                DaemonMessageSerializer.create(buildActionSerializer, lazyPayloadSerializerContainer)
+                DaemonMessageSerializer.create(buildActionSerializer)
             ),
             daemonRegistry,
             daemonContext,

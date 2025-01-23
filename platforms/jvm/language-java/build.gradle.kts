@@ -1,6 +1,5 @@
 plugins {
     id("gradlebuild.distribution.api-java")
-    id("gradlebuild.instrumented-java-project")
 }
 
 description = "Source for JavaCompile, JavaExec and Javadoc tasks, it also contains logic for incremental Java compilation"
@@ -78,6 +77,7 @@ dependencies {
     testImplementation(testFixtures(projects.core))
     testImplementation(testFixtures(projects.platformBase))
     testImplementation(testFixtures(projects.toolchainsJvm))
+    testImplementation(testFixtures(projects.toolchainsJvmShared))
 
     testImplementation(libs.commonsIo)
     testImplementation(libs.nativePlatform) {
