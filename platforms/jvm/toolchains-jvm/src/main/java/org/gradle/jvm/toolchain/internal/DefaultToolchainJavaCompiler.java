@@ -22,7 +22,6 @@ import org.gradle.api.tasks.Nested;
 import org.gradle.api.tasks.WorkResult;
 import org.gradle.jvm.toolchain.JavaCompiler;
 import org.gradle.jvm.toolchain.JavaInstallationMetadata;
-import org.gradle.language.base.internal.compile.CompileSpec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,7 +50,7 @@ public class DefaultToolchainJavaCompiler implements JavaCompiler {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends CompileSpec> WorkResult execute(T spec) {
+    public <T> WorkResult execute(T spec) {
         LOGGER.info("Compiling with toolchain '{}'.", javaToolchain.getDisplayName());
         final Class<T> specType = (Class<T>) spec.getClass();
         return compilerFactory.create(specType).execute(spec);

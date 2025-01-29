@@ -28,7 +28,6 @@ import org.gradle.api.internal.file.temp.TemporaryFileProvider;
 import org.gradle.api.internal.provider.PropertyFactory;
 import org.gradle.api.internal.tasks.compile.CleaningJavaCompiler;
 import org.gradle.api.internal.tasks.compile.CommandLineJavaCompileSpec;
-import org.gradle.api.internal.tasks.compile.CompilationSourceDirs;
 import org.gradle.api.internal.tasks.compile.CompileJavaBuildOperationReportingCompiler;
 import org.gradle.api.internal.tasks.compile.CompilerForkUtils;
 import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpec;
@@ -36,6 +35,8 @@ import org.gradle.api.internal.tasks.compile.DefaultJavaCompileSpecFactory;
 import org.gradle.api.internal.tasks.compile.HasCompileOptions;
 import org.gradle.api.internal.tasks.compile.JavaCompileExecutableUtils;
 import org.gradle.api.internal.tasks.compile.JavaCompileSpec;
+import org.gradle.api.internal.tasks.compile.MinimalJavaCompileOptionsConverter;
+import org.gradle.api.internal.tasks.compile.SourceRootInferrer;
 import org.gradle.api.internal.tasks.compile.incremental.IncrementalCompilerFactory;
 import org.gradle.api.internal.tasks.compile.incremental.recomp.JavaRecompilationSpecProvider;
 import org.gradle.api.jvm.ModularitySpec;
@@ -67,7 +68,6 @@ import org.gradle.jvm.toolchain.JavaInstallationMetadata;
 import org.gradle.jvm.toolchain.JavaToolchainService;
 import org.gradle.jvm.toolchain.internal.DefaultToolchainJavaCompiler;
 import org.gradle.jvm.toolchain.internal.JavaExecutableUtils;
-import org.gradle.language.base.internal.compile.CompileSpec;
 import org.gradle.language.base.internal.compile.Compiler;
 import org.gradle.work.Incremental;
 import org.gradle.work.InputChanges;
@@ -200,7 +200,7 @@ public abstract class JavaCompile extends AbstractCompile implements HasCompileO
         return new CleaningJavaCompiler<>(javaCompiler, getOutputs(), getDeleter());
     }
 
-    private <T extends CompileSpec> Compiler<T> createToolchainCompiler() {
+    private <T> Compiler<T> createToolchainCompiler() {
         return spec -> {
             DefaultToolchainJavaCompiler compiler = (DefaultToolchainJavaCompiler) getJavaCompiler().get();
             return compiler.execute(spec);
@@ -228,7 +228,7 @@ public abstract class JavaCompile extends AbstractCompile implements HasCompileO
     @VisibleForTesting
     DefaultJavaCompileSpec createSpec() {
         validateForkOptionsMatchToolchain();
-        List<File> sourcesRoots = CompilationSourceDirs.inferSourceRoots((FileTreeInternal) getStableSources().getAsFileTree());
+        List<File> sourcesRoots = SourceRootInferrer.inferSourceRoots((FileTreeInternal) getStableSources().getAsFileTree());
         JavaModuleDetector javaModuleDetector = getJavaModuleDetector();
         boolean isModule = JavaModuleDetector.isModuleSource(modularity.getInferModulePath().get(), sourcesRoots);
         boolean isSourcepathUserDefined = compileOptions.getSourcepath() != null && !compileOptions.getSourcepath().isEmpty();
@@ -312,7 +312,7 @@ public abstract class JavaCompile extends AbstractCompile implements HasCompileO
             spec.setSourceCompatibility(sourceCompatibility);
             spec.setTargetCompatibility(targetCompatibility);
         }
-        spec.setCompileOptions(compileOptions);
+        spec.setCompileOptions(MinimalJavaCompileOptionsConverter.toMinimalJavaCompileOptions(compileOptions));
     }
 
     private JavaInstallationMetadata getToolchain() {
