@@ -18,6 +18,7 @@ package org.gradle.internal.serialize.codecs.core
 
 import org.gradle.api.Action
 import org.gradle.api.file.ConfigurableFilePermissions
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.DuplicatesStrategy
 import org.gradle.api.file.FileCollection
 import org.gradle.api.file.FileCopyDetails
@@ -37,9 +38,9 @@ import org.gradle.internal.serialize.graph.decodePreservingIdentity
 import org.gradle.internal.serialize.graph.encodePreservingIdentityOf
 import org.gradle.internal.serialize.graph.readEnum
 import org.gradle.internal.serialize.graph.readList
+import org.gradle.internal.serialize.graph.readNonNull
 import org.gradle.internal.serialize.graph.writeCollection
 import org.gradle.internal.serialize.graph.writeEnum
-import java.io.File
 
 
 class DefaultCopySpecCodec(
@@ -52,8 +53,7 @@ class DefaultCopySpecCodec(
 
     override suspend fun WriteContext.encode(value: DefaultCopySpec) {
         encodePreservingIdentityOf(value) {
-            // TODO: Should we write this with DirectoryPropertyCodec?
-            writeNullableString(value.destinationDir.asFile.map { it.absolutePath }.orNull)
+            write(value.destinationDir)
             write(value.sourceRootsForThisSpec)
             write(value.patterns)
             writeEnum(value.duplicatesStrategyForThisSpec)
@@ -69,7 +69,6 @@ class DefaultCopySpecCodec(
 
     override suspend fun ReadContext.decode(): DefaultCopySpec {
         return decodePreservingIdentity { id ->
-            val destPath = readNullableString()
             val sourceFiles = read() as FileCollection
             val patterns = read() as PatternSet
             val duplicatesStrategy = readEnum<DuplicatesStrategy>()
@@ -81,9 +80,8 @@ class DefaultCopySpecCodec(
             val actions = readList().uncheckedCast<List<Action<FileCopyDetails>>>()
             val children = readList().uncheckedCast<List<CopySpecInternal>>()
             val copySpec = DefaultCopySpec(fileCollectionFactory, objectFactory, instantiator, patternSetFactory, sourceFiles, patterns, actions, children)
-            if (destPath != null) {
-                copySpec.destinationDir.set(File(destPath))
-            }
+            val dir = readNonNull<DirectoryProperty>()
+            copySpec.destinationDir.set(dir)
             copySpec.duplicatesStrategy = duplicatesStrategy
             copySpec.includeEmptyDirs = includeEmptyDirs
             copySpec.isCaseSensitive = isCaseSensitive
