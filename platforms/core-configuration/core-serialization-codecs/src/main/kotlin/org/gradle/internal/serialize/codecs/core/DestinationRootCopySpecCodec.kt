@@ -16,6 +16,7 @@
 
 package org.gradle.internal.serialize.codecs.core
 
+import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.internal.file.FileResolver
 import org.gradle.api.internal.file.copy.CopySpecInternal
 import org.gradle.api.internal.file.copy.DestinationRootCopySpec
@@ -23,6 +24,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.internal.serialize.graph.Codec
 import org.gradle.internal.serialize.graph.ReadContext
 import org.gradle.internal.serialize.graph.WriteContext
+import org.gradle.internal.serialize.graph.readNonNull
 import java.io.File
 
 
@@ -37,10 +39,10 @@ class DestinationRootCopySpecCodec(
     }
 
     override suspend fun ReadContext.decode(): DestinationRootCopySpec {
-        val destDir = read() as? File
+        val destDir = readNonNull<DirectoryProperty>()
         val delegate = read() as CopySpecInternal
-        val spec = objectFactory.newInstance(DestinationRootCopySpec::class.java, fileResolver, delegate)
-        destDir?.let(spec::into)
+        val spec = objectFactory.newInstance(DestinationRootCopySpec::class.java, fileResolver, objectFactory, delegate)
+        spec.destinationDir.set(destDir)
         return spec
     }
 }

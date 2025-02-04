@@ -19,19 +19,23 @@ package org.gradle.api.internal.file.copy;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileSystemLocation;
+import org.gradle.api.internal.provider.Providers;
+import org.gradle.api.model.ObjectFactory;
 import org.gradle.api.provider.Provider;
 import org.gradle.internal.file.PathToFileResolver;
 
 import javax.inject.Inject;
 
-public abstract class DestinationRootCopySpec extends DelegatingCopySpecInternal {
+public class DestinationRootCopySpec extends DelegatingCopySpecInternal {
 
     private final PathToFileResolver fileResolver;
     private final CopySpecInternal delegate;
+    private final DirectoryProperty destinationDir;
 
     @Inject
-    public DestinationRootCopySpec(PathToFileResolver fileResolver, CopySpecInternal delegate) {
+    public DestinationRootCopySpec(PathToFileResolver fileResolver, ObjectFactory objectFactory, CopySpecInternal delegate) {
         this.fileResolver = fileResolver;
+        this.destinationDir = objectFactory.directoryProperty();
         this.delegate = delegate;
     }
 
@@ -51,13 +55,15 @@ public abstract class DestinationRootCopySpec extends DelegatingCopySpecInternal
                 }
             }));
         } else {
-            getDestinationDir().set(fileResolver.resolve(destinationDir));
+            getDestinationDir().fileProvider(Providers.changing(() -> fileResolver.resolve(destinationDir)));
         }
         return this;
     }
 
     @Override
-    public abstract DirectoryProperty getDestinationDir();
+    public DirectoryProperty getDestinationDir() {
+        return destinationDir;
+    }
 
     // TODO:configuration-cache - remove this
     public CopySpecInternal getDelegate() {
