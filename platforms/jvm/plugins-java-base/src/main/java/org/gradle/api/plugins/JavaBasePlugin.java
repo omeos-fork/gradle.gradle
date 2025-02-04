@@ -51,7 +51,6 @@ import org.gradle.api.plugins.jvm.internal.JvmPluginServices;
 import org.gradle.api.provider.Provider;
 import org.gradle.api.reporting.DirectoryReport;
 import org.gradle.api.reporting.ReportingExtension;
-import org.gradle.api.tasks.Copy;
 import org.gradle.api.tasks.SourceSet;
 import org.gradle.api.tasks.SourceSetContainer;
 import org.gradle.api.tasks.TaskProvider;
@@ -246,7 +245,7 @@ public abstract class JavaBasePlugin implements Plugin<Project> {
             resourcesTask.from(resourceSet);
         });
         DefaultSourceSetOutput output = Cast.uncheckedCast(sourceSet.getOutput());
-        output.setResourcesContributor(processResources.map(Copy::getDestinationDir), processResources);
+        output.setResourcesContributor(processResources.flatMap(it -> it.getDestinationDir().map(Directory::getAsFile)), processResources);
     }
 
     private void createClassesTask(final SourceSet sourceSet, Project target) {
