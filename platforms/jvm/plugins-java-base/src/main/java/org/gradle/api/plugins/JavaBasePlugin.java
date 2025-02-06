@@ -246,7 +246,14 @@ public abstract class JavaBasePlugin implements Plugin<Project> {
             resourcesTask.from(resourceSet);
         });
         DefaultSourceSetOutput output = Cast.uncheckedCast(sourceSet.getOutput());
-        output.setResourcesContributor(processResources.flatMap(it -> it.getDestinationDir().map(Directory::getAsFile)), processResources);
+        // We use getLocationOnly(), since SourceSetOutput can query
+        // directory before processResources task runs which triggers an error
+        Provider<File> outputDirectory = processResources.flatMap(
+            task -> task.getDestinationDir()
+                .getLocationOnly()
+                .map(Directory::getAsFile)
+        );
+        output.setResourcesContributor(outputDirectory, processResources);
     }
 
     private void createClassesTask(final SourceSet sourceSet, Project target) {

@@ -25,7 +25,6 @@ import org.gradle.internal.serialize.graph.Codec
 import org.gradle.internal.serialize.graph.ReadContext
 import org.gradle.internal.serialize.graph.WriteContext
 import org.gradle.internal.serialize.graph.readNonNull
-import java.io.File
 
 
 class DestinationRootCopySpecCodec(
