@@ -17,7 +17,6 @@
 package org.gradle.api.internal.file.copy;
 
 import org.gradle.api.file.CopySpec;
-import org.gradle.api.file.Directory;
 import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.FileSystemLocation;
 import org.gradle.api.internal.provider.Providers;
@@ -47,7 +46,9 @@ public class DestinationRootCopySpec extends DelegatingCopySpecInternal {
 
     @Override
     public CopySpec into(Object destinationDir) {
-        if (destinationDir instanceof Provider) {
+        if (destinationDir instanceof DirectoryProperty) {
+            getDestinationDir().set((DirectoryProperty) destinationDir);
+        } else if (destinationDir instanceof Provider) {
             getDestinationDir().fileProvider(((Provider<?>) destinationDir).map(file -> {
                 if (file instanceof FileSystemLocation) {
                     return ((FileSystemLocation) file).getAsFile();
@@ -64,11 +65,6 @@ public class DestinationRootCopySpec extends DelegatingCopySpecInternal {
     @Override
     public DirectoryProperty getDestinationDir() {
         return destinationDir;
-    }
-
-    @Override
-    public Provider<Directory> getDestinationDirLocationOnly() {
-        return destinationDir.getLocationOnly();
     }
 
     // TODO:configuration-cache - remove this

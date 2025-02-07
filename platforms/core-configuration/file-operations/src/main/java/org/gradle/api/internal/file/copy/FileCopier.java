@@ -75,13 +75,13 @@ public class FileCopier {
 
     public WorkResult copy(Action<? super CopySpec> action) {
         DestinationRootCopySpec copySpec = createCopySpec(action);
-        File destinationDir = copySpec.getDestinationDir().getAsFile().get();
+        File destinationDir = copySpec.getDestinationDir().get().getAsFile();
         return doCopy(copySpec, getCopyVisitor(destinationDir));
     }
 
     public WorkResult sync(Action<? super SyncSpec> action) {
         DestinationRootCopySpec copySpec = createCopySpec(action);
-        File destinationDir = copySpec.getDestinationDir().getAsFile().get();
+        File destinationDir = copySpec.getDestinationDir().get().getAsFile();
         return doCopy(copySpec,
             new SyncCopyActionDecorator(
                 destinationDir,

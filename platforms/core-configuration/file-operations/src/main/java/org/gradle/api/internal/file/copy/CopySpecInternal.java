@@ -59,8 +59,6 @@ public interface CopySpecInternal extends SyncSpec {
 
     Provider<Directory> getDestinationDir();
 
-    Provider<Directory> getDestinationDirLocationOnly();
-
     /**
      * Listener triggered when a spec is added to the hierarchy.
      */

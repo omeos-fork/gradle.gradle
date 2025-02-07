@@ -90,7 +90,7 @@ public abstract class ExtractPluginRequestsTask extends DefaultTask {
 
         getFileSystemOperations().sync(copySpec -> {
             copySpec.from(getExtractedPluginRequestsClassesDirectory().getAsFileTree().getFiles()).include("**.class");
-            copySpec.into(getExtractedPluginRequestsClassesStagingDirectory().get().getAsFile());
+            copySpec.into(getExtractedPluginRequestsClassesStagingDirectory());
         });
     }
 

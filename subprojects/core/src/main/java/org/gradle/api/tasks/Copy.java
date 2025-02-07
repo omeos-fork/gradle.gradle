@@ -77,7 +77,7 @@ public abstract class Copy extends AbstractCopyTask {
         if (!getDestinationDir().isPresent()) {
             throw new InvalidUserDataException("No copy destination directory has been specified, use 'into' to specify a target directory.");
         }
-        File destinationDir = getDestinationDir().getAsFile().get();
+        File destinationDir = getDestinationDir().get().getAsFile();
         return new FileCopyAction(getFileLookup().getFileResolver(destinationDir));
     }
 

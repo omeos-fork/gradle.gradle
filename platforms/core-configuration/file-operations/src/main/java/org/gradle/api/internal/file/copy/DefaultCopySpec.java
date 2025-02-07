@@ -28,6 +28,7 @@ import org.gradle.api.file.ConfigurableFilePermissions;
 import org.gradle.api.file.CopyProcessingSpec;
 import org.gradle.api.file.CopySpec;
 import org.gradle.api.file.Directory;
+import org.gradle.api.file.DirectoryProperty;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.ExpandDetails;
 import org.gradle.api.file.FileCollection;
@@ -85,6 +86,7 @@ public class DefaultCopySpec implements CopySpecInternal {
     private final List<Action<? super FileCopyDetails>> copyActions = new LinkedList<>();
     private final Property<ConfigurableFilePermissions> dirPermissions;
     private final Property<ConfigurableFilePermissions> filePermissions;
+    private final DirectoryProperty destinationDir;
     private Object destDir;
     private boolean hasCustomActions;
     private Boolean caseSensitive;
@@ -108,6 +110,9 @@ public class DefaultCopySpec implements CopySpecInternal {
         this.patternSet = patternSet;
         this.filePermissions = objectFactory.property(ConfigurableFilePermissions.class);
         this.dirPermissions = objectFactory.property(ConfigurableFilePermissions.class);
+        this.destinationDir = objectFactory.directoryProperty().fileProvider(Providers.changing(() ->
+            destDir == null ? null : new File(PATH_NOTATION_PARSER.parseNotation(destDir))
+        ));
     }
 
     public DefaultCopySpec(FileCollectionFactory fileCollectionFactory, ObjectFactory objectFactory, Instantiator instantiator, Factory<PatternSet> patternSetFactory, FileCollection source, PatternSet patternSet, Collection<? extends Action<? super FileCopyDetails>> copyActions, Collection<CopySpecInternal> children) {
@@ -253,12 +258,7 @@ public class DefaultCopySpec implements CopySpecInternal {
 
     @Override
     public Provider<Directory> getDestinationDir() {
-        return objectFactory.directoryProperty().fileProvider(Providers.changing(() -> new File(PATH_NOTATION_PARSER.parseNotation(destDir))));
-    }
-
-    @Override
-    public Provider<Directory> getDestinationDirLocationOnly() {
-        return getDestinationDir();
+        return destinationDir;
     }
 
     @Override
