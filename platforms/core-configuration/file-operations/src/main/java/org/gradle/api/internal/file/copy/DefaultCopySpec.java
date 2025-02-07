@@ -257,6 +257,11 @@ public class DefaultCopySpec implements CopySpecInternal {
     }
 
     @Override
+    public Provider<Directory> getDestinationDirLocationOnly() {
+        return getDestinationDir();
+    }
+
+    @Override
     public CopySpec into(Object destDir) {
         this.destDir = destDir;
         return this;

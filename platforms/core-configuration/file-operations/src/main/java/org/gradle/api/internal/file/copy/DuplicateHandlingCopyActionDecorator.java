@@ -22,6 +22,7 @@ import org.gradle.api.file.DuplicateFileCopyingException;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.RelativePath;
 import org.gradle.api.internal.DocumentationRegistry;
+import org.gradle.api.provider.Provider;
 import org.gradle.api.tasks.WorkResult;
 import org.gradle.util.internal.TextUtil;
 import org.slf4j.Logger;
@@ -73,7 +74,8 @@ public class DuplicateHandlingCopyActionDecorator implements CopyAction {
     }
 
     private String buildFormattedOutputPath(RelativePath relativePath) {
-        return TextUtil.toPlatformLineSeparators(!spec.getDestinationDir().isPresent() ? relativePath.getPathString() : new File(spec.getDestinationDir().map(Directory::getAsFile).get(), relativePath.getPathString()).getPath());
+        Provider<Directory> destinationDirLocation = spec.getDestinationDirLocationOnly();
+        return TextUtil.toPlatformLineSeparators(!destinationDirLocation.isPresent() ? relativePath.getPathString() : new File(destinationDirLocation.map(Directory::getAsFile).get(), relativePath.getPathString()).getPath());
     }
 
     private void failWithIncorrectDuplicatesStrategySetup(RelativePath relativePath) {

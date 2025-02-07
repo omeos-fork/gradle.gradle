@@ -104,7 +104,7 @@ abstract class CompileGroovyScriptPluginsTask extends DefaultTask {
 
         fileSystemOperations.sync(copySpec -> {
             copySpec.from(intermediatePluginClassesDirectory.get().getAsFileTree().getFiles());
-            copySpec.into(getPrecompiledGroovyScriptsOutputDirectory());
+            copySpec.into(getPrecompiledGroovyScriptsOutputDirectory().get().getAsFile());
         });
         ClassLoaderUtils.tryClose(compileClassLoader);
     }

@@ -371,4 +371,9 @@ public abstract class DelegatingCopySpecInternal implements CopySpecInternal {
     public Provider<Directory> getDestinationDir() {
         return getDelegateCopySpec().getDestinationDir();
     }
+
+    @Override
+    public Provider<Directory> getDestinationDirLocationOnly() {
+        return getDelegateCopySpec().getDestinationDirLocationOnly();
+    }
 }
