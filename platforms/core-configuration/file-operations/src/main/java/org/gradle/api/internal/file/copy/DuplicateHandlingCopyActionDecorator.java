@@ -17,6 +17,7 @@
 package org.gradle.api.internal.file.copy;
 
 import org.gradle.api.InvalidUserCodeException;
+import org.gradle.api.file.Directory;
 import org.gradle.api.file.DuplicateFileCopyingException;
 import org.gradle.api.file.DuplicatesStrategy;
 import org.gradle.api.file.RelativePath;
@@ -72,7 +73,7 @@ public class DuplicateHandlingCopyActionDecorator implements CopyAction {
     }
 
     private String buildFormattedOutputPath(RelativePath relativePath) {
-        return TextUtil.toPlatformLineSeparators(!spec.getDestinationDir().isPresent() ? relativePath.getPathString() : new File(spec.getDestinationDir().getAsFile().get(), relativePath.getPathString()).getPath());
+        return TextUtil.toPlatformLineSeparators(!spec.getDestinationDir().isPresent() ? relativePath.getPathString() : new File(spec.getDestinationDir().map(Directory::getAsFile).get(), relativePath.getPathString()).getPath());
     }
 
     private void failWithIncorrectDuplicatesStrategySetup(RelativePath relativePath) {
