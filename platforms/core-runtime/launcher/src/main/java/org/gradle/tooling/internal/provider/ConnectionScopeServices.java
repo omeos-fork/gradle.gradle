@@ -86,6 +86,7 @@ public class ConnectionScopeServices implements ServiceRegistrationProvider {
 
 //    @Provides
 //    protected ManagedFactoryRegistry createManagedFactoryRegistry(NamedObjectInstantiator namedObjectInstantiator, InstantiatorFactory instantiatorFactory) {
+//
 //        return new DefaultManagedFactoryRegistry(null).withFactories(namedObjectInstantiator, instantiatorFactory.getManagedFactory());
 //    }
 
@@ -115,6 +116,7 @@ public class ConnectionScopeServices implements ServiceRegistrationProvider {
         IsolatableFactory isolatableFactory,
         IsolatableSerializerRegistry isolatableSerializerRegistry
     ) {
+
         ClassLoaderCache classLoaderCache = new ClassLoaderCache();
         return new ProviderConnection(
                 serviceRegistry,
