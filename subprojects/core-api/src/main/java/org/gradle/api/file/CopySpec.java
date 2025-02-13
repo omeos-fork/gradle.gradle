@@ -263,6 +263,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of include patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#include(String...)
      */
     CopySpec include(String... includes);
 
@@ -270,6 +271,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of include patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#include(Iterable)
      */
     CopySpec include(Iterable<String> includes);
 
@@ -277,6 +279,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of include patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#include(Spec)
      */
     CopySpec include(Spec<FileTreeElement> includeSpec);
 
@@ -284,6 +287,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of include patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#include(Closure)
      */
     CopySpec include(Closure includeSpec);
 
@@ -291,6 +295,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of exclude patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#exclude(String...)
      */
     CopySpec exclude(String... excludes);
 
@@ -298,6 +303,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of exclude patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#exclude(Iterable)
      */
     CopySpec exclude(Iterable<String> excludes);
 
@@ -305,6 +311,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of exclude patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#exclude(Spec)
      */
     CopySpec exclude(Spec<FileTreeElement> excludeSpec);
 
@@ -312,6 +319,7 @@ public interface CopySpec extends CopySourceSpec, CopyProcessingSpec {
      * Adds to the set of exclude patterns.
      *
      * @see org.gradle.api.tasks.util.PatternFilterable Pattern Format
+     * @see org.gradle.api.tasks.util.PatternFilterable#exclude(Closure)
      */
     CopySpec exclude(Closure excludeSpec);
 
