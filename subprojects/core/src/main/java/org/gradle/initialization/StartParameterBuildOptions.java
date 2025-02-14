@@ -635,7 +635,7 @@ public class StartParameterBuildOptions extends BuildOptionSet<StartParameterInt
     }
 
     /**
-     * Enables stricter integrity checks of the stored configuration cache entries, at the cost of inflating the entry size by 10-15%.
+     * Enables stricter integrity checks of the stored configuration cache entries, at the cost of significantly inflating the entry size.
      * Can be useful when debugging store failures.
      */
     public static class ConfigurationCacheIntegrityCheckOption extends BooleanBuildOption<StartParameterInternal> {
