@@ -16,7 +16,6 @@
 
 package org.gradle.internal.cc.impl
 
-import org.gradle.util.internal.ToBeImplemented
 import spock.lang.Issue
 
 class ConfigurationCacheFileCollectionIntegrationTest extends AbstractConfigurationCacheIntegrationTest {
@@ -262,7 +261,6 @@ class ConfigurationCacheFileCollectionIntegrationTest extends AbstractConfigurat
         file('build/consumer-output.txt').text == '42'
     }
 
-    @ToBeImplemented
     @Issue("https://github.com/gradle/gradle/issues/30052")
     def "provider-backed file collections with relative paths are resolved relative to their source"() {
         given:
@@ -289,9 +287,7 @@ class ConfigurationCacheFileCollectionIntegrationTest extends AbstractConfigurat
         configurationCacheRun ":sub:foo"
 
         then:
-        def files = ["subFile.txt", "otherFile.txt", "settingsFile.txt"]
-        // TODO: files must be resolved relative to the their source
-//        def files = ["sub/subFile.txt", "other/otherFile.txt", "settingsFile.txt"]
+        def files = ["sub/subFile.txt", "other/otherFile.txt", "settingsFile.txt"]
         outputContains("Effective files: ${files.collect { testDirectory.file(it) }.toSorted()}")
     }
 
