@@ -17,12 +17,13 @@
 package org.gradle.api.internal.tasks.scala;
 
 import java.io.File;
+import java.io.Serializable;
 
 /**
  * Counterpart to {@link org.gradle.api.tasks.scala.IncrementalCompileOptions} intended to be
  * serialized and loaded by Scala compiler worker in a separate process.
  */
-public class MinimalIncrementalCompileOptions {
+public class MinimalIncrementalCompileOptions implements Serializable {
 
     private final File analysisFile;
     private final File classfileBackupDir;
