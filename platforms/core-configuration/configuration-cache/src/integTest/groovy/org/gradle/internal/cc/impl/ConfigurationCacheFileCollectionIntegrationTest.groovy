@@ -262,7 +262,7 @@ class ConfigurationCacheFileCollectionIntegrationTest extends AbstractConfigurat
     }
 
     @Issue("https://github.com/gradle/gradle/issues/30052")
-    def "provider-backed file collections with relative paths are resolved relative to their source"() {
+    def "file collections with provider-supplied relative-path files are resolved relative to their source"() {
         given:
         settingsFile """
             include("sub")
@@ -291,5 +291,69 @@ class ConfigurationCacheFileCollectionIntegrationTest extends AbstractConfigurat
         outputContains("Effective files: ${files.collect { testDirectory.file(it) }.toSorted()}")
     }
 
-    // TODO: add tests for other file collections (like file trees) that carry around their own resolvers
+    def "file collections with provider-supplied relative-path directories are resolved relative to their source"() {
+        given:
+        settingsFile """
+            include("sub")
+            include("other")
+        """
+        createDirs("other")
+
+        file("sub/subDir/subFile.txt").touch()
+        file("other/otherDir/otherFile.txt").touch()
+        file("settingsSubDir/settingsFile.txt").touch()
+
+        buildFile "sub/build.gradle", """
+            abstract class CustomTask extends DefaultTask {
+                @InputFiles abstract ConfigurableFileCollection getIncoming()
+                @TaskAction void run() { println("Effective files: \${incoming.files.toSorted()}") }
+            }
+
+            tasks.register("foo", CustomTask) {
+                incoming.from(project.layout.projectDirectory.dir(provider { "subDir" }))
+                incoming.from(project(":other").isolated.projectDirectory.dir(provider { "otherDir" }))
+                incoming.from(layout.settingsDirectory.dir(provider { "settingsSubDir" }))
+            }
+        """
+
+        when:
+        configurationCacheRun ":sub:foo"
+
+        then:
+        def files = ["sub/subDir", "other/otherDir", "settingsSubDir"]
+        outputContains("Effective files: ${files.collect { testDirectory.file(it) }.toSorted()}")
+    }
+
+    def "file collections with provider-supplied relative-path file trees are resolved relative to their source"() {
+        given:
+        settingsFile """
+            include("sub")
+            include("other")
+        """
+        createDirs("other")
+
+        file("sub/subDir/subFile.txt").touch()
+        file("other/otherDir/otherFile.txt").touch()
+        file("settingsSubDir/settingsFile.txt").touch()
+
+        buildFile "sub/build.gradle", """
+            abstract class CustomTask extends DefaultTask {
+                @InputFiles abstract ConfigurableFileCollection getIncoming()
+                @TaskAction void run() { println("Effective files: \${incoming.files.toSorted()}") }
+            }
+
+            tasks.register("foo", CustomTask) {
+                incoming.from(project.layout.projectDirectory.dir(provider { "subDir" }).map { it.asFileTree })
+                incoming.from(project(":other").isolated.projectDirectory.dir(provider { "otherDir" }).map { it.asFileTree })
+                incoming.from(layout.settingsDirectory.dir(provider { "settingsSubDir" }).map { it.asFileTree })
+            }
+        """
+
+        when:
+        configurationCacheRun ":sub:foo"
+
+        then:
+        def files = ["sub/subDir/subFile.txt", "other/otherDir/otherFile.txt", "settingsSubDir/settingsFile.txt"]
+        outputContains("Effective files: ${files.collect { testDirectory.file(it) }.toSorted()}")
+    }
 }
