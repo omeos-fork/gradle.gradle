@@ -208,10 +208,11 @@ public abstract class AbstractScalaCompile extends AbstractCompile implements Ha
             forkOptions.getMemoryMaximumSize(),
             forkOptions.getAllJvmArgs()
         ));
+        RegularFileProperty publishedCodeFile = incrementalOptions.getPublishedCode();
         result.setIncrementalOptions(new MinimalIncrementalCompileOptions(
             incrementalOptions.getAnalysisFile().get().getAsFile(),
             incrementalOptions.getClassfileBackupDir().get().getAsFile(),
-            incrementalOptions.getPublishedCode().get().getAsFile()
+            publishedCodeFile.isPresent() ? publishedCodeFile.get().getAsFile() : null
         ));
         result.setKeepAliveMode(compileOptions.getKeepAliveMode().get().name());
 
@@ -234,18 +235,17 @@ public abstract class AbstractScalaCompile extends AbstractCompile implements Ha
     }
 
     private void configureIncrementalCompilation(ScalaCompileSpec spec) {
-        IncrementalCompileOptions incrementalOptions = scalaCompileOptions.getIncrementalOptions();
-
-        File analysisFile = incrementalOptions.getAnalysisFile().getAsFile().get();
-        File classpathBackupDir = incrementalOptions.getClassfileBackupDir().getAsFile().get();
+        MinimalIncrementalCompileOptions incrementalOptions = spec.getScalaCompileOptions().getIncrementalOptions();
+        File analysisFile = incrementalOptions.getAnalysisFile();
+        File classpathBackupDir = incrementalOptions.getClassfileBackupDir();
         Map<File, File> globalAnalysisMap = resolveAnalysisMappingsForOtherProjects();
         spec.setAnalysisMap(globalAnalysisMap);
         spec.setAnalysisFile(analysisFile);
         spec.setClassfileBackupDir(classpathBackupDir);
 
         // If this Scala compile is published into a jar, generate a analysis mapping file
-        if (incrementalOptions.getPublishedCode().isPresent()) {
-            File publishedCode = incrementalOptions.getPublishedCode().getAsFile().get();
+        if (incrementalOptions.getPublishedCode() != null) {
+            File publishedCode = incrementalOptions.getPublishedCode();
 
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("scala-incremental Analysis file: {}", analysisFile);

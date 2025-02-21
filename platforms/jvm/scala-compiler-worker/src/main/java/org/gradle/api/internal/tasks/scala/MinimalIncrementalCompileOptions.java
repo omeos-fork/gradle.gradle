@@ -16,6 +16,7 @@
 
 package org.gradle.api.internal.tasks.scala;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.Serializable;
 
@@ -32,7 +33,7 @@ public class MinimalIncrementalCompileOptions implements Serializable {
     public MinimalIncrementalCompileOptions(
         File analysisFile,
         File classfileBackupDir,
-        File publishedCode
+        @Nullable File publishedCode
     ) {
         this.analysisFile = analysisFile;
         this.classfileBackupDir = classfileBackupDir;
@@ -47,6 +48,7 @@ public class MinimalIncrementalCompileOptions implements Serializable {
         return classfileBackupDir;
     }
 
+    @Nullable
     public File getPublishedCode() {
         return publishedCode;
     }

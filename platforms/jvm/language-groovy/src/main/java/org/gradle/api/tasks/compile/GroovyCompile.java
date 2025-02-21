@@ -17,7 +17,6 @@
 package org.gradle.api.tasks.compile;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import org.gradle.api.InvalidUserDataException;
 import org.gradle.api.JavaVersion;
@@ -36,8 +35,6 @@ import org.gradle.api.internal.tasks.compile.DefaultGroovyJavaJointCompileSpecFa
 import org.gradle.api.internal.tasks.compile.GroovyCompilerFactory;
 import org.gradle.api.internal.tasks.compile.GroovyJavaJointCompileSpec;
 import org.gradle.api.internal.tasks.compile.HasCompileOptions;
-import org.gradle.api.internal.tasks.compile.MinimalGroovyCompileOptions;
-import org.gradle.api.internal.tasks.compile.MinimalGroovyCompilerDaemonForkOptions;
 import org.gradle.api.internal.tasks.compile.MinimalJavaCompileOptionsConverter;
 import org.gradle.api.internal.tasks.compile.SourceRootInferrer;
 import org.gradle.api.internal.tasks.compile.incremental.IncrementalCompilerFactory;
@@ -73,7 +70,6 @@ import org.gradle.work.InputChanges;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -244,7 +240,7 @@ public abstract class GroovyCompile extends AbstractCompile implements HasCompil
         spec.setAnnotationProcessorPath(Lists.newArrayList(compileOptions.getAnnotationProcessorPath() == null ? getProjectLayout().files() : compileOptions.getAnnotationProcessorPath()));
         spec.setGroovyClasspath(Lists.newArrayList(getGroovyClasspath()));
         spec.setCompileOptions(MinimalJavaCompileOptionsConverter.toMinimalJavaCompileOptions(compileOptions));
-        spec.setGroovyCompileOptions(toMinimalGroovyCompileOptions(groovyCompileOptions));
+        spec.setGroovyCompileOptions(MinimalGroovyCompileOptionsConverter.toMinimalGroovyCompileOptions(groovyCompileOptions));
         spec.getCompileOptions().setSupportsCompilerApi(true);
         if (getOptions().isIncremental()) {
             validateIncrementalCompilationOptions(sourceRoots, spec.annotationProcessingConfigured());
@@ -260,34 +256,6 @@ public abstract class GroovyCompile extends AbstractCompile implements HasCompil
         spec.getCompileOptions().getForkOptions().setExecutable(executable);
 
         return spec;
-    }
-
-    private static MinimalGroovyCompileOptions toMinimalGroovyCompileOptions(GroovyCompileOptions compileOptions) {
-        GroovyForkOptions forkOptions = compileOptions.getForkOptions();
-
-        MinimalGroovyCompileOptions result = new MinimalGroovyCompileOptions();
-
-        // TODO: MinimalGroovyCompileOptions should be immutable.
-        result.setFailOnError(compileOptions.isFailOnError());
-        result.setVerbose(compileOptions.isVerbose());
-        result.setListFiles(compileOptions.isListFiles());
-        result.setEncoding(compileOptions.getEncoding());
-        result.setFork(compileOptions.isFork());
-        result.setKeepStubs(compileOptions.isKeepStubs());
-        result.setFileExtensions(ImmutableList.copyOf(compileOptions.getFileExtensions()));
-        result.setForkOptions(new MinimalGroovyCompilerDaemonForkOptions(
-            forkOptions.getMemoryInitialSize(),
-            forkOptions.getMemoryMaximumSize(),
-            forkOptions.getAllJvmArgs()
-        ));
-        result.setOptimizationOptions(new HashMap<>(compileOptions.getOptimizationOptions()));
-        result.setStubDir(compileOptions.getStubDir());
-        result.setConfigurationScript(compileOptions.getConfigurationScript());
-        result.setJavaAnnotationProcessing(compileOptions.isJavaAnnotationProcessing());
-        result.setParameters(compileOptions.isParameters());
-        result.setDisabledGlobalASTTransformations(ImmutableSet.copyOf(compileOptions.getDisabledGlobalASTTransformations().get()));
-
-        return result;
     }
 
     private void configureCompatibilityOptions(DefaultGroovyJavaJointCompileSpec spec) {
