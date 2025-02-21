@@ -22,13 +22,10 @@ import org.gradle.api.problems.internal.InternalProblems;
 import org.gradle.initialization.layout.ProjectCacheDir;
 import org.gradle.jvm.toolchain.internal.JavaCompilerFactory;
 import org.gradle.language.base.internal.compile.Compiler;
-import org.gradle.language.base.internal.compile.CompilerWorkResult;
-import org.gradle.language.base.internal.compile.WorkerCompiler;
 import org.gradle.process.internal.ClientExecHandleBuilderFactory;
 import org.gradle.process.internal.JavaForkOptionsFactory;
 import org.gradle.process.internal.worker.child.WorkerDirectoryProvider;
 import org.gradle.workers.internal.ActionExecutionSpecFactory;
-import org.gradle.workers.internal.DefaultWorkResult;
 import org.gradle.workers.internal.WorkerDaemonFactory;
 
 public class DefaultJavaCompilerFactory implements JavaCompilerFactory {
@@ -93,20 +90,8 @@ public class DefaultJavaCompilerFactory implements JavaCompilerFactory {
         if (ForkingJavaCompileSpec.class.isAssignableFrom(type)) {
             return (Compiler<T>) new DaemonJavaCompiler(workingDirProvider.getWorkingDirectory(), javaHomeBasedJavaCompilerFactory, new ProcessIsolatedCompilerWorkerExecutor(workerDaemonFactory, actionExecutionSpecFactory, projectCacheDir), forkOptionsFactory, classPathRegistry);
         } else {
-            JdkJavaCompiler jdkJavaCompiler = new JdkJavaCompiler(javaHomeBasedJavaCompilerFactory, problems);
-            return (Compiler<T>) asCompiler(jdkJavaCompiler);
+            return (Compiler<T>) new JdkJavaCompiler(javaHomeBasedJavaCompilerFactory, problems);
         }
-    }
-
-    /**
-     * Interprets a {@link WorkerCompiler}, which is able to run in worker processes, as a {@link Compiler},
-     * a more generic type that can be used elsewhere.
-     */
-    static <T> Compiler<T> asCompiler(WorkerCompiler<T> workerCompiler) {
-        return spec -> {
-            CompilerWorkResult result = workerCompiler.execute(spec);
-            return new DefaultWorkResult(result.getDidWork(), result.getException());
-        };
     }
 
 }

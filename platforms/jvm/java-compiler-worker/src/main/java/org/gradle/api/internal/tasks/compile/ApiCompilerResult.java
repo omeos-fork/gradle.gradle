@@ -18,28 +18,22 @@ package org.gradle.api.internal.tasks.compile;
 
 import org.gradle.api.internal.tasks.compile.incremental.compilerapi.constants.ConstantsAnalysisResult;
 import org.gradle.api.internal.tasks.compile.incremental.processing.AnnotationProcessingResult;
-import org.gradle.language.base.internal.compile.CompilerWorkResult;
+import org.gradle.workers.internal.DefaultWorkResult;
 
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class ApiCompilerResult implements CompilerWorkResult, Serializable {
+public class ApiCompilerResult extends DefaultWorkResult implements Serializable {
 
     private final AnnotationProcessingResult annotationProcessingResult = new AnnotationProcessingResult();
     private final ConstantsAnalysisResult constantsAnalysisResult = new ConstantsAnalysisResult();
     private final Map<String, Set<String>> sourceToClassMapping = new HashMap<>();
     private final Map<String, String> backupClassFiles = new HashMap<>();
 
-    @Override
-    public boolean getDidWork() {
-        return true;
-    }
-
-    @Override
-    public Throwable getException() {
-        return null;
+    public ApiCompilerResult() {
+        super(true, null);
     }
 
     public AnnotationProcessingResult getAnnotationProcessingResult() {

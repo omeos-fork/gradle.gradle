@@ -17,9 +17,9 @@
 package org.gradle.api.internal.tasks.compile;
 
 import org.gradle.api.problems.internal.InternalProblems;
+import org.gradle.api.tasks.WorkResult;
 import org.gradle.internal.file.PathToFileResolver;
-import org.gradle.language.base.internal.compile.CompilerWorkResult;
-import org.gradle.language.base.internal.compile.WorkerCompiler;
+import org.gradle.language.base.internal.compile.Compiler;
 
 import javax.inject.Inject;
 import java.io.File;
@@ -28,7 +28,7 @@ import java.util.List;
 /**
  * Groovy compiler class loaded on the daemon-side, which actually performs compilation.
  */
-public class GroovyDaemonSideCompiler implements WorkerCompiler<GroovyJavaJointCompileSpec> {
+public class GroovyDaemonSideCompiler implements Compiler<GroovyJavaJointCompileSpec> {
 
     private final PathToFileResolver fileResolver;
     private final List<File> javaCompilerPlugins;
@@ -42,9 +42,9 @@ public class GroovyDaemonSideCompiler implements WorkerCompiler<GroovyJavaJointC
     }
 
     @Override
-    public CompilerWorkResult execute(GroovyJavaJointCompileSpec spec) {
-        WorkerCompiler<JavaCompileSpec> javaCompiler = new JdkJavaCompiler(new JavaHomeBasedJavaCompilerFactory(javaCompilerPlugins), problemsService);
-        WorkerCompiler<GroovyJavaJointCompileSpec> groovyCompiler = new ApiGroovyCompiler(javaCompiler, fileResolver);
+    public WorkResult execute(GroovyJavaJointCompileSpec spec) {
+        Compiler<JavaCompileSpec> javaCompiler = new JdkJavaCompiler(new JavaHomeBasedJavaCompilerFactory(javaCompilerPlugins), problemsService);
+        Compiler<GroovyJavaJointCompileSpec> groovyCompiler = new ApiGroovyCompiler(javaCompiler, fileResolver);
         return groovyCompiler.execute(spec);
     }
 

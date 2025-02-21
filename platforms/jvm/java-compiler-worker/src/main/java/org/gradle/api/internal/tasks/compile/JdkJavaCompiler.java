@@ -25,10 +25,10 @@ import org.gradle.api.problems.Severity;
 import org.gradle.api.problems.internal.GradleCoreProblemGroup;
 import org.gradle.api.problems.internal.InternalProblem;
 import org.gradle.api.problems.internal.InternalProblems;
+import org.gradle.api.tasks.WorkResult;
 import org.gradle.internal.Factory;
 import org.gradle.internal.classpath.DefaultClassPath;
-import org.gradle.language.base.internal.compile.CompilerWorkResult;
-import org.gradle.language.base.internal.compile.WorkerCompiler;
+import org.gradle.language.base.internal.compile.Compiler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +47,7 @@ import java.util.Set;
 
 import static java.util.stream.Collectors.toList;
 
-public class JdkJavaCompiler implements WorkerCompiler<JavaCompileSpec>, Serializable {
+public class JdkJavaCompiler implements Compiler<JavaCompileSpec>, Serializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(JdkJavaCompiler.class);
 
     private final Context context;
@@ -67,7 +67,7 @@ public class JdkJavaCompiler implements WorkerCompiler<JavaCompileSpec>, Seriali
     }
 
     @Override
-    public CompilerWorkResult execute(JavaCompileSpec spec) {
+    public WorkResult execute(JavaCompileSpec spec) {
         LOGGER.info("Compiling with JDK Java compiler API.");
 
         ApiCompilerResult result = new ApiCompilerResult();

@@ -17,8 +17,6 @@ dependencies {
     api(projects.languageJvm)
     api(projects.loggingApi)
     api(projects.modelCore)
-    api(projects.persistentCache)
-    api(projects.platformBase)
     api(projects.platformJvm)
     api(projects.scalaCompilerWorker)
     api(projects.stdlibJavaExtensions)

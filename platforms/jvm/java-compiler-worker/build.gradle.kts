@@ -12,9 +12,14 @@ gradlebuildJava {
 dependencies {
     api(projects.baseServices)
     api(projects.classloaders)
+    api(projects.daemonServerWorker)
     api(projects.jvmCompilerWorker)
     api(projects.problemsApi)
     api(projects.stdlibJavaExtensions)
+
+    api(projects.coreApi) {
+        because("Compiler and WorkResult. We should migrate away from these interfaces.")
+    }
 
     api(libs.guava)
     api(libs.inject)

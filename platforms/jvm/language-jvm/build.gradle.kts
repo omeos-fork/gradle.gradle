@@ -12,7 +12,6 @@ dependencies {
     api(projects.daemonServerWorker)
     api(projects.files)
     api(projects.jvmCompilerWorker)
-    api(projects.platformBase)
     api(projects.platformJvm)
     api(projects.serviceProvider)
     api(projects.stdlibJavaExtensions)
@@ -25,6 +24,7 @@ dependencies {
     implementation(projects.dependencyManagement)
     implementation(projects.logging)
     implementation(projects.modelReflect)
+    implementation(projects.platformBase)
     implementation(projects.testSuitesBase)
 
     implementation(libs.guava)

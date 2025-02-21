@@ -19,14 +19,14 @@ package org.gradle.api.internal.tasks.scala;
 import com.google.common.collect.Iterables;
 import org.gradle.api.internal.tasks.compile.CompilationFailedException;
 import org.gradle.api.internal.tasks.compile.JavaCompilerArgumentsBuilder;
+import org.gradle.api.tasks.WorkResult;
 import org.gradle.cache.internal.MapBackedCache;
 import org.gradle.internal.jvm.Jvm;
 import org.gradle.internal.time.Time;
 import org.gradle.internal.time.Timer;
-import org.gradle.language.base.internal.compile.BasicCompilerWorkResult;
-import org.gradle.language.base.internal.compile.CompilerWorkResult;
-import org.gradle.language.base.internal.compile.WorkerCompiler;
+import org.gradle.language.base.internal.compile.Compiler;
 import org.gradle.util.internal.GFileUtils;
+import org.gradle.workers.internal.DefaultWorkResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sbt.internal.inc.Analysis;
@@ -65,7 +65,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ZincScalaCompiler implements WorkerCompiler<ScalaJavaJointCompileSpec> {
+public class ZincScalaCompiler implements Compiler<ScalaJavaJointCompileSpec> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ZincScalaCompiler.class);
 
     private final ScalaInstance scalaInstance;
@@ -83,7 +83,7 @@ public class ZincScalaCompiler implements WorkerCompiler<ScalaJavaJointCompileSp
     }
 
     @Override
-    public CompilerWorkResult execute(final ScalaJavaJointCompileSpec spec) {
+    public WorkResult execute(final ScalaJavaJointCompileSpec spec) {
 
         LOGGER.info("Compiling with Zinc Scala compiler.");
 
@@ -165,7 +165,7 @@ public class ZincScalaCompiler implements WorkerCompiler<ScalaJavaJointCompileSp
         }
         LOGGER.info("Completed Scala compilation: {}", timer.getElapsed());
 
-        return new BasicCompilerWorkResult(true, null);
+        return new DefaultWorkResult(true, null);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

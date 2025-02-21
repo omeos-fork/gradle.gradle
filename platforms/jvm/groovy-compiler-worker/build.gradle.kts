@@ -11,6 +11,10 @@ dependencies {
     api(projects.jvmCompilerWorker)
     api(projects.problemsApi)
 
+    api(projects.coreApi) {
+        because("Compiler and WorkResult. We should migrate away from these interfaces.")
+    }
+
     api(libs.inject)
     api(libs.jsr305)
 

@@ -12,10 +12,15 @@ dependencies {
     api(projects.jvmCompilerWorker)
     api(projects.persistentCache)
 
+    api(projects.coreApi) {
+        because("Compiler and WorkResult. We should migrate away from these interfaces.")
+    }
+
     api(libs.inject)
     api(libs.jsr305)
 
     implementation(projects.baseServices)
+    implementation(projects.daemonServerWorker)
     implementation(projects.stdlibJavaExtensions)
     implementation(projects.time)
 

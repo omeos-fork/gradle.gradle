@@ -15,5 +15,9 @@ dependencies {
     implementation(projects.classloaders)
     implementation(projects.stdlibJavaExtensions)
 
+    implementation(projects.coreApi) {
+        because("Compiler and WorkResult. We should migrate away from these interfaces.")
+    }
+
     implementation(libs.guava)
 }

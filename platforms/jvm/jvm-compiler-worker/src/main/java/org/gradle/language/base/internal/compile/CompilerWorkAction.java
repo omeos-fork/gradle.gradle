@@ -16,23 +16,25 @@
 
 package org.gradle.language.base.internal.compile;
 
+import org.gradle.api.tasks.WorkResult;
 import org.gradle.internal.Cast;
 import org.gradle.internal.classloader.ClassLoaderUtils;
 import org.gradle.internal.reflect.Instantiator;
 import org.gradle.workers.WorkAction;
+import org.gradle.workers.internal.DefaultWorkResult;
 import org.gradle.workers.internal.ProvidesWorkResult;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 
 /**
- * Instantiated in a separate compiler daemon process and executes a {@link WorkerCompiler} implementation.
+ * Instantiated in a separate compiler daemon process and executes a {@link Compiler} implementation.
  *
  * @see org.gradle.api.internal.tasks.compile.daemon.AbstractIsolatedCompilerWorkerExecutor
  */
 public class CompilerWorkAction implements WorkAction<CompilerParameters>, ProvidesWorkResult {
 
-    private CompilerWorkResult workResult;
+    private WorkResult workResult;
     private final CompilerParameters parameters;
     private final Instantiator instantiator;
 
@@ -52,8 +54,8 @@ public class CompilerWorkAction implements WorkAction<CompilerParameters>, Provi
 
     @Override
     public void execute() {
-        Class<? extends WorkerCompiler<?>> compilerClass = Cast.uncheckedCast(ClassLoaderUtils.classFromContextLoader(getParameters().getCompilerClassName()));
-        WorkerCompiler<?> compiler = instantiator.newInstance(compilerClass, getParameters().getCompilerInstanceParameters());
+        Class<? extends Compiler<?>> compilerClass = Cast.uncheckedCast(ClassLoaderUtils.classFromContextLoader(getParameters().getCompilerClassName()));
+        Compiler<?> compiler = instantiator.newInstance(compilerClass, getParameters().getCompilerInstanceParameters());
         this.workResult = compiler.execute(Cast.uncheckedCast(getParameters().getCompileSpec()));
     }
 
@@ -65,7 +67,10 @@ public class CompilerWorkAction implements WorkAction<CompilerParameters>, Provi
     @Nullable
     @Override
     public Throwable getException() {
-        return workResult.getException();
+        if (workResult instanceof DefaultWorkResult) {
+            return ((DefaultWorkResult) workResult).getException();
+        }
+        return null;
     }
 
 }

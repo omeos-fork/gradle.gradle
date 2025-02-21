@@ -42,14 +42,14 @@ import org.gradle.api.GradleException;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.internal.classloading.GroovySystemLoader;
 import org.gradle.api.internal.classloading.GroovySystemLoaderFactory;
+import org.gradle.api.tasks.WorkResult;
 import org.gradle.internal.classloader.ClassLoaderUtils;
 import org.gradle.internal.classloader.DefaultClassLoaderFactory;
 import org.gradle.internal.classloader.FilteringClassLoader;
 import org.gradle.internal.classpath.DefaultClassPath;
 import org.gradle.internal.concurrent.CompositeStoppable;
 import org.gradle.internal.file.PathToFileResolver;
-import org.gradle.language.base.internal.compile.CompilerWorkResult;
-import org.gradle.language.base.internal.compile.WorkerCompiler;
+import org.gradle.language.base.internal.compile.Compiler;
 import org.gradle.util.internal.VersionNumber;
 
 import java.io.File;
@@ -76,12 +76,12 @@ import static org.gradle.internal.FileUtils.hasExtension;
 /**
  * Executes Groovy compilation in-process via the Groovy compiler API.
  */
-public class ApiGroovyCompiler implements WorkerCompiler<GroovyJavaJointCompileSpec>, Serializable {
+public class ApiGroovyCompiler implements Compiler<GroovyJavaJointCompileSpec>, Serializable {
 
-    private final WorkerCompiler<JavaCompileSpec> javaCompiler;
+    private final Compiler<JavaCompileSpec> javaCompiler;
     private final PathToFileResolver fileResolver;
 
-    public ApiGroovyCompiler(WorkerCompiler<JavaCompileSpec> javaCompiler, PathToFileResolver fileResolver) {
+    public ApiGroovyCompiler(Compiler<JavaCompileSpec> javaCompiler, PathToFileResolver fileResolver) {
         this.javaCompiler = javaCompiler;
         this.fileResolver = fileResolver;
     }
@@ -155,7 +155,7 @@ public class ApiGroovyCompiler implements WorkerCompiler<GroovyJavaJointCompileS
     }
 
     @Override
-    public CompilerWorkResult execute(final GroovyJavaJointCompileSpec spec) {
+    public WorkResult execute(final GroovyJavaJointCompileSpec spec) {
         ApiCompilerResult result = new ApiCompilerResult();
         result.getAnnotationProcessingResult().setFullRebuildCause("Incremental annotation processing is not supported by Groovy.");
         GroovySystemLoaderFactory groovySystemLoaderFactory = new GroovySystemLoaderFactory();
@@ -286,7 +286,7 @@ public class ApiGroovyCompiler implements WorkerCompiler<GroovyJavaJointCompileS
                         }));
 
                         try {
-                            CompilerWorkResult javaCompilerResult = javaCompiler.execute(spec);
+                            WorkResult javaCompilerResult = javaCompiler.execute(spec);
                             if (javaCompilerResult instanceof ApiCompilerResult) {
                                 copyJavaCompilerResult((ApiCompilerResult) javaCompilerResult);
                             }
